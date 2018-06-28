@@ -67,3 +67,16 @@ meta_data %>%
 
 ```
 
+```{r}
+left_join(characters_list, 
+          meta_data, 
+          by=c("script_id")) %>%
+  group_by(title, year) %>%
+  drop_na(gross) %>%
+  mutate(fem_prop = (sum(gender == "f") / n()),
+         man_prop = (1 - fem_prop)) %>% 
+  ungroup() -> scripts_data
+
+scripts_data %>% 
+  glimpse()
+```

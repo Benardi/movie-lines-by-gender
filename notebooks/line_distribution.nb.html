@@ -277,7 +277,7 @@ div.tocify {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVhZF9jc3YoaGVyZShcImRhdGEvY2hhcmFjdGVyX2xpc3Q1LmNzdlwiKSxcbiAgICAgICAgICAgICAgICAgICAgICBwcm9ncmVzcyA9IEZBTFNFLFxuICAgICAgICAgICAgICAgICAgICAgIGNvbF90eXBlcyA9IGNvbHMoXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzY3JpcHRfaWQgPSBjb2xfaW50ZWdlcigpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW1kYl9jaGFyYWN0ZXJfbmFtZSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcmRzID0gY29sX2ludGVnZXIoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlbmRlciA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFnZSA9IGNvbF9jaGFyYWN0ZXIoKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKSkgJT4lXG4gIG11dGF0ZShhZ2UgPSBhcy5udW1lcmljKGFnZSkpIC0+IGNoYXJhY3RlcnNfbGlzdFxuY2hhcmFjdGVyc19saXN0ICU+JSBcbiAgZ2xpbXBzZSgpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVhZF9jc3YoaGVyZShcImRhdGEvY2hhcmFjdGVyX2xpc3Q1LmNzdlwiKSxcbiAgICAgICAgICAgICAgICAgICAgICBwcm9ncmVzcyA9IEZBTFNFLFxuICAgICAgICAgICAgICAgICAgICAgIGNvbF90eXBlcyA9IGNvbHMoXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzY3JpcHRfaWQgPSBjb2xfaW50ZWdlcigpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW1kYl9jaGFyYWN0ZXJfbmFtZSA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcmRzID0gY29sX2ludGVnZXIoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGdlbmRlciA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGFnZSA9IGNvbF9jaGFyYWN0ZXIoKVxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKSkgJT4lXG4gIG11dGF0ZShhZ2UgPSBhcy5udW1lcmljKGFnZSkpIC0+IGNoYXJhY3RlcnNfbGlzdFxuXG5jaGFyYWN0ZXJzX2xpc3QgJT4lIFxuICBnbGltcHNlKClcblxuYGBgIn0= -->
 <pre class="r"><code>read_csv(here(&quot;data/character_list5.csv&quot;),
                       progress = FALSE,
                       col_types = cols(
@@ -288,49 +288,34 @@ div.tocify {
                                     age = col_character()
                                     )) %&gt;%
   mutate(age = as.numeric(age)) -&gt; characters_list
+
 characters_list %&gt;% 
-  glimpse()</code></pre>
+  glimpse()
+</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiT2JzZXJ2YXRpb25zOiAyMywwNDhcblZhcmlhYmxlczogNVxuJCBzY3JpcHRfaWQgICAgICAgICAgIDxpbnQ+IDI4MCwgMjgwLCAyODAsIDI4MCwgMjgwLCAyODAsIDI4MCwgNjIzLCA2MjMsIDYyMywgNjIzLCA2MjMsIDYyMywuLi5cbiQgaW1kYl9jaGFyYWN0ZXJfbmFtZSA8Y2hyPiBcImJldHR5XCIsIFwiY2Fyb2x5biBqb2huc29uXCIsIFwiZWxlYW5vclwiLCBcImZyYW5jZXNjYSBqb2huc1wiLCBcIm1hZGdlLi4uXG4kIHdvcmRzICAgICAgICAgICAgICAgPGludD4gMzExLCA4NzMsIDEzOCwgMjI1MSwgMTkwLCA3MjMsIDE5MDgsIDMyOCwgNDA5LCAzNDcsIDIwMjAsIDM2NiwgMS4uLlxuJCBnZW5kZXIgICAgICAgICAgICAgIDxjaHI+IFwiZlwiLCBcImZcIiwgXCJmXCIsIFwiZlwiLCBcImZcIiwgXCJtXCIsIFwibVwiLCBcIm1cIiwgXCJmXCIsIFwibVwiLCBcIm1cIiwgXCJtXCIsIFwibVwiLC4uLlxuJCBhZ2UgICAgICAgICAgICAgICAgIDxkYmw+IDM1LCBOQSwgTkEsIDQ2LCA0NiwgMzgsIDY1LCBOQSwgMjgsIE5BLCA1OCwgNTMsIDI1LCAzOSwgMzMsIE5BLCAuLi5cbiJ9 -->
-<pre><code>Observations: 23,048
-Variables: 5
-$ script_id           &lt;int&gt; 280, 280, 280, 280, 280, 280, 280, 623, 623, 623, 623, 623, 623,...
-$ imdb_character_name &lt;chr&gt; &quot;betty&quot;, &quot;carolyn johnson&quot;, &quot;eleanor&quot;, &quot;francesca johns&quot;, &quot;madge...
-$ words               &lt;int&gt; 311, 873, 138, 2251, 190, 723, 1908, 328, 409, 347, 2020, 366, 1...
-$ gender              &lt;chr&gt; &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;, &quot;f&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;,...
-$ age                 &lt;dbl&gt; 35, NA, NA, 46, 46, 38, 65, NA, 28, NA, 58, 53, 25, 39, 33, NA, ...</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVhZF9jc3YoaGVyZShcImRhdGEvY2hhcmFjdGVyX21hcHBpbmcuY3N2XCIpLFxuICAgICAgICAgICAgICAgICAgICAgIHByb2dyZXNzID0gRkFMU0UsXG4gICAgICAgICAgICAgICAgICAgICAgY29sX3R5cGVzID0gY29scyhcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNjcmlwdF9pZCA9IGNvbF9pbnRlZ2VyKCksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBpbWRiX2lkID0gY29sX2NoYXJhY3RlcigpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2hhcmFjdGVyX2Zyb21fc2NyaXB0ID0gY29sX2NoYXJhY3RlcigpLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xvc2VzdF9jaGFyYWN0ZXJfbmFtZV9mcm9tX2ltZGJfbWF0Y2ggPSBjb2xfY2hhcmFjdGVyKCksXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbG9zZXN0X2ltZGJfY2hhcmFjdGVyX2lkID0gY29sX2NoYXJhY3RlcigpKSkgLT5cbiAgICAgICAgICAgICAgICAgICAgICBjaGFyYWN0ZXJzX21hcHBpbmdcbmNoYXJhY3RlcnNfbWFwcGluZyAlPiUgXG4gIGdsaW1wc2UoKVxuYGBgIn0= -->
-<pre class="r"><code>read_csv(here(&quot;data/character_mapping.csv&quot;),
-                      progress = FALSE,
-                      col_types = cols(
-                                    script_id = col_integer(),
-                                    imdb_id = col_character(),
-                                    character_from_script = col_character(),
-                                    closest_character_name_from_imdb_match = col_character(),
-                                    closest_imdb_character_id = col_character())) -&gt;
-                      characters_mapping
-characters_mapping %&gt;% 
-  glimpse()</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyByZWFkX2NzdihoZXJlKFwiZGF0YS9jaGFyYWN0ZXJfbWFwcGluZy5jc3ZcIiksXG4jICAgICAgICAgICAgICAgICAgICAgICBwcm9ncmVzcyA9IEZBTFNFLFxuIyAgICAgICAgICAgICAgICAgICAgICAgY29sX3R5cGVzID0gY29scyhcbiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc2NyaXB0X2lkID0gY29sX2ludGVnZXIoKSxcbiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgaW1kYl9pZCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2hhcmFjdGVyX2Zyb21fc2NyaXB0ID0gY29sX2NoYXJhY3RlcigpLFxuIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbG9zZXN0X2NoYXJhY3Rlcl9uYW1lX2Zyb21faW1kYl9tYXRjaCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2xvc2VzdF9pbWRiX2NoYXJhY3Rlcl9pZCA9IGNvbF9jaGFyYWN0ZXIoKSkpIC0+XG4jICAgICAgICAgICAgICAgICAgICAgICBjaGFyYWN0ZXJzX21hcHBpbmdcbiMgXG4jIGNoYXJhY3RlcnNfbWFwcGluZyAlPiUgXG4jICAgZ2xpbXBzZSgpXG5gYGAifQ== -->
+<pre class="r"><code># read_csv(here(&quot;data/character_mapping.csv&quot;),
+#                       progress = FALSE,
+#                       col_types = cols(
+#                                     script_id = col_integer(),
+#                                     imdb_id = col_character(),
+#                                     character_from_script = col_character(),
+#                                     closest_character_name_from_imdb_match = col_character(),
+#                                     closest_imdb_character_id = col_character())) -&gt;
+#                       characters_mapping
+# 
+# characters_mapping %&gt;% 
+#   glimpse()</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiT2JzZXJ2YXRpb25zOiA5OSwzOTBcblZhcmlhYmxlczogNVxuJCBzY3JpcHRfaWQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA8aW50PiAxLCAxLCAxLCAxLCAxLCAxLCAxLCAxLCAxLCAyLCAyLCAyLCAyLCAyLCAyLCAuLi5cbiQgaW1kYl9pZCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPGNocj4gXCJ0dDAxNDc4MDBcIiwgXCJ0dDAxNDc4MDBcIiwgXCJ0dDAxNDc4MDBcIiwgXCJ0dDAxNC4uLlxuJCBjaGFyYWN0ZXJfZnJvbV9zY3JpcHQgICAgICAgICAgICAgICAgICA8Y2hyPiBcImJpYW5jYVwiLCBcImNhbWVyb25cIiwgXCJjaGFzdGl0eVwiLCBcImpvZXlcIiwgXCJrYXQuLi5cbiQgY2xvc2VzdF9jaGFyYWN0ZXJfbmFtZV9mcm9tX2ltZGJfbWF0Y2ggPGNocj4gXCJiaWFuY2Egc3RyYXRmb3JkXCIsIFwiY2FtZXJvbiBqYW1lc1wiLCBcImNoYXN0aXQuLi5cbiQgY2xvc2VzdF9pbWRiX2NoYXJhY3Rlcl9pZCAgICAgICAgICAgICAgPGNocj4gXCJubTA2NDYzNTFcIiwgXCJubTAzMzA2ODdcIiwgXCJubTAwMDU1MTdcIiwgXCJubTAwMC4uLlxuIn0= -->
-<pre><code>Observations: 99,390
-Variables: 5
-$ script_id                              &lt;int&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, ...
-$ imdb_id                                &lt;chr&gt; &quot;tt0147800&quot;, &quot;tt0147800&quot;, &quot;tt0147800&quot;, &quot;tt014...
-$ character_from_script                  &lt;chr&gt; &quot;bianca&quot;, &quot;cameron&quot;, &quot;chastity&quot;, &quot;joey&quot;, &quot;kat...
-$ closest_character_name_from_imdb_match &lt;chr&gt; &quot;bianca stratford&quot;, &quot;cameron james&quot;, &quot;chastit...
-$ closest_imdb_character_id              &lt;chr&gt; &quot;nm0646351&quot;, &quot;nm0330687&quot;, &quot;nm0005517&quot;, &quot;nm000...</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVhZF9jc3YoaGVyZShcImRhdGEvbWV0YV9kYXRhNy5jc3ZcIiksXG4gICAgICAgICAgICAgICAgICAgICAgcHJvZ3Jlc3MgPSBGQUxTRSxcbiAgICAgICAgIGNvbF90eXBlcyA9IGNvbHMoXG4gICAgICAgICAgICAgICAgICAgICAgICBzY3JpcHRfaWQgPSBjb2xfaW50ZWdlcigpLFxuICAgICAgICAgICAgICAgICAgICAgICAgaW1kYl9pZCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgIHRpdGxlID0gY29sX2NoYXJhY3RlcigpLFxuICAgICAgICAgICAgICAgICAgICAgICAgeWVhciA9IGNvbF9pbnRlZ2VyKCksXG4gICAgICAgICAgICAgICAgICAgICAgICBncm9zcyA9IGNvbF9pbnRlZ2VyKCksXG4gICAgICAgICAgICAgICAgICAgICAgICBsaW5lc19kYXRhID0gY29sX2NoYXJhY3RlcigpXG4gICAgICAgICAgICAgICAgICAgICAgICApKSAtPiBtZXRhX2RhdGFcbm1ldGFfZGF0YSAlPiUgXG4gIGdsaW1wc2UoKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVhZF9jc3YoaGVyZShcImRhdGEvbWV0YV9kYXRhNy5jc3ZcIiksXG4gICAgICAgICAgICAgICAgICAgICAgcHJvZ3Jlc3MgPSBGQUxTRSxcbiAgICAgICAgIGNvbF90eXBlcyA9IGNvbHMoXG4gICAgICAgICAgICAgICAgICAgICAgICBzY3JpcHRfaWQgPSBjb2xfaW50ZWdlcigpLFxuICAgICAgICAgICAgICAgICAgICAgICAgaW1kYl9pZCA9IGNvbF9jaGFyYWN0ZXIoKSxcbiAgICAgICAgICAgICAgICAgICAgICAgIHRpdGxlID0gY29sX2NoYXJhY3RlcigpLFxuICAgICAgICAgICAgICAgICAgICAgICAgeWVhciA9IGNvbF9pbnRlZ2VyKCksXG4gICAgICAgICAgICAgICAgICAgICAgICBncm9zcyA9IGNvbF9pbnRlZ2VyKCksXG4gICAgICAgICAgICAgICAgICAgICAgICBsaW5lc19kYXRhID0gY29sX2NoYXJhY3RlcigpXG4gICAgICAgICAgICAgICAgICAgICAgICApKSAtPiBtZXRhX2RhdGFcblxubWV0YV9kYXRhICU+JSBcbiAgZ2xpbXBzZSgpXG5cbmBgYCJ9 -->
 <pre class="r"><code>read_csv(here(&quot;data/meta_data7.csv&quot;),
                       progress = FALSE,
          col_types = cols(
@@ -341,24 +326,46 @@ $ closest_imdb_character_id              &lt;chr&gt; &quot;nm0646351&quot;, &quo
                         gross = col_integer(),
                         lines_data = col_character()
                         )) -&gt; meta_data
+
 meta_data %&gt;% 
-  glimpse()</code></pre>
+  glimpse()
+</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiT2JzZXJ2YXRpb25zOiAyLDAwMFxuVmFyaWFibGVzOiA2XG4kIHNjcmlwdF9pZCAgPGludD4gMTUzNCwgMTUxMiwgMTUxNCwgMTUxNywgMTUyMCwgNjUzNywgMzc3OCwgNjIzLCAxNTI1LCA2MDMwLCA2MjUsIDE1MDksIDg1NC4uLlxuJCBpbWRiX2lkICAgIDxjaHI+IFwidHQxMDIyNjAzXCIsIFwidHQwMTQ3ODAwXCIsIFwidHQwNDE3Mzg1XCIsIFwidHQyMDI0NTQ0XCIsIFwidHQxNTQyMzQ0XCIsIFwidHQwNDUwMy4uLlxuJCB0aXRsZSAgICAgIDxjaHI+IFwiKDUwMCkgRGF5cyBvZiBTdW1tZXJcIiwgXCIxMCBUaGluZ3MgSSBIYXRlIEFib3V0IFlvdVwiLCBcIjEyIGFuZCBIb2xkaW5nXCIsIFwiLi4uXG4kIHllYXIgICAgICAgPGludD4gMjAwOSwgMTk5OSwgMjAwNSwgMjAxMywgMjAxMCwgMjAwNywgMTk5MiwgMjAwMSwgMjAwOSwgMjAxMywgMTk2OCwgMjAwOSwgMi4uLlxuJCBncm9zcyAgICAgIDxpbnQ+IDM3LCA2NSwgTkEsIDYwLCAyMCwgOTEsIDE1LCAzNywgNzQsIDgwLCAzNzYsIDE5MiwgOTgsIDIwNCwgMTksIDU5LCA2NywgMzYuLi5cbiQgbGluZXNfZGF0YSA8Y2hyPiBcIjc0MzU0NDUyNTY3NzQ3NzQ0NDMzNDI1Nzc3NzU2NTc3NDQ0MzQ0NDQ1NjQ0NTY3NDU0MzM2NzU1MzQ1Mjc3NzczNDIzNzU0NC4uLlxuIn0= -->
-<pre><code>Observations: 2,000
-Variables: 6
-$ script_id  &lt;int&gt; 1534, 1512, 1514, 1517, 1520, 6537, 3778, 623, 1525, 6030, 625, 1509, 854...
-$ imdb_id    &lt;chr&gt; &quot;tt1022603&quot;, &quot;tt0147800&quot;, &quot;tt0417385&quot;, &quot;tt2024544&quot;, &quot;tt1542344&quot;, &quot;tt04503...
-$ title      &lt;chr&gt; &quot;(500) Days of Summer&quot;, &quot;10 Things I Hate About You&quot;, &quot;12 and Holding&quot;, &quot;...
-$ year       &lt;int&gt; 2009, 1999, 2005, 2013, 2010, 2007, 1992, 2001, 2009, 2013, 1968, 2009, 2...
-$ gross      &lt;int&gt; 37, 65, NA, 60, 20, 91, 15, 37, 74, 80, 376, 192, 98, 204, 19, 59, 67, 36...
-$ lines_data &lt;chr&gt; &quot;743544525677477444334257777565774443444456445674543367553452777734237544...</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGVmdF9qb2luKGNoYXJhY3RlcnNfbGlzdCwgXG4gICAgICAgICAgbWV0YV9kYXRhLCBcbiAgICAgICAgICBieT1jKFwic2NyaXB0X2lkXCIpKSAlPiVcbiAgZ3JvdXBfYnkodGl0bGUsIHllYXIpICU+JVxuICBkcm9wX25hKGdyb3NzKSAlPiVcbiAgbXV0YXRlKGZlbV9wcm9wID0gKHN1bShnZW5kZXIgPT0gXCJmXCIpIC8gbigpKSxcbiAgICAgICAgIG1hbl9wcm9wID0gKDEgLSBmZW1fcHJvcCkpICU+JSBcbiAgdW5ncm91cCgpIC0+IHNjcmlwdHNfZGF0YVxuc2NyaXB0c19kYXRhICU+JSBcbiAgZ2xpbXBzZSgpXG5gYGAifQ== -->
+<pre class="r"><code>left_join(characters_list, 
+          meta_data, 
+          by=c(&quot;script_id&quot;)) %&gt;%
+  group_by(title, year) %&gt;%
+  drop_na(gross) %&gt;%
+  mutate(fem_prop = (sum(gender == &quot;f&quot;) / n()),
+         man_prop = (1 - fem_prop)) %&gt;% 
+  ungroup() -&gt; scripts_data
+scripts_data %&gt;% 
+  glimpse()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiT2JzZXJ2YXRpb25zOiAxOSwzODdcblZhcmlhYmxlczogMTJcbiQgc2NyaXB0X2lkICAgICAgICAgICA8aW50PiAyODAsIDI4MCwgMjgwLCAyODAsIDI4MCwgMjgwLCAyODAsIDYyMywgNjIzLCA2MjMsIDYyMywgNjIzLCA2MjMsLi4uXG4kIGltZGJfY2hhcmFjdGVyX25hbWUgPGNocj4gXCJiZXR0eVwiLCBcImNhcm9seW4gam9obnNvblwiLCBcImVsZWFub3JcIiwgXCJmcmFuY2VzY2Egam9obnNcIiwgXCJtYWRnZS4uLlxuJCB3b3JkcyAgICAgICAgICAgICAgIDxpbnQ+IDMxMSwgODczLCAxMzgsIDIyNTEsIDE5MCwgNzIzLCAxOTA4LCAzMjgsIDQwOSwgMzQ3LCAyMDIwLCAzNjYsIDEuLi5cbiQgZ2VuZGVyICAgICAgICAgICAgICA8Y2hyPiBcImZcIiwgXCJmXCIsIFwiZlwiLCBcImZcIiwgXCJmXCIsIFwibVwiLCBcIm1cIiwgXCJtXCIsIFwiZlwiLCBcIm1cIiwgXCJtXCIsIFwibVwiLCBcIm1cIiwuLi5cbiQgYWdlICAgICAgICAgICAgICAgICA8ZGJsPiAzNSwgTkEsIE5BLCA0NiwgNDYsIDM4LCA2NSwgTkEsIDI4LCBOQSwgNTgsIDUzLCAyNSwgMzksIDMzLCBOQSwgLi4uXG4kIGltZGJfaWQgICAgICAgICAgICAgPGNocj4gXCJ0dDAxMTI1NzlcIiwgXCJ0dDAxMTI1NzlcIiwgXCJ0dDAxMTI1NzlcIiwgXCJ0dDAxMTI1NzlcIiwgXCJ0dDAxMTI1NzlcIiwuLi5cbiQgdGl0bGUgICAgICAgICAgICAgICA8Y2hyPiBcIlRoZSBCcmlkZ2VzIG9mIE1hZGlzb24gQ291bnR5XCIsIFwiVGhlIEJyaWRnZXMgb2YgTWFkaXNvbiBDb3VudHlcIi4uLlxuJCB5ZWFyICAgICAgICAgICAgICAgIDxpbnQ+IDE5OTUsIDE5OTUsIDE5OTUsIDE5OTUsIDE5OTUsIDE5OTUsIDE5OTUsIDIwMDEsIDIwMDEsIDIwMDEsIDIwMDEuLi5cbiQgZ3Jvc3MgICAgICAgICAgICAgICA8aW50PiAxNDIsIDE0MiwgMTQyLCAxNDIsIDE0MiwgMTQyLCAxNDIsIDM3LCAzNywgMzcsIDM3LCAzNywgMzcsIDM3LCAzLi4uXG4kIGxpbmVzX2RhdGEgICAgICAgICAgPGNocj4gXCI0MzMyMDIzNDM0MzQzNDQzMjAzNDMzNDM0MzM0NDMzNDM0MzQzNDM0NDM0MzQ0MzQ0MzMzNDM0NDQzNDQ0MzQuLi5cbiQgZmVtX3Byb3AgICAgICAgICAgICA8ZGJsPiAwLjcxNDI4NTcsIDAuNzE0Mjg1NywgMC43MTQyODU3LCAwLjcxNDI4NTcsIDAuNzE0Mjg1NywgMC43MTQyODU3Li4uXG4kIG1hbl9wcm9wICAgICAgICAgICAgPGRibD4gMC4yODU3MTQzLCAwLjI4NTcxNDMsIDAuMjg1NzE0MywgMC4yODU3MTQzLCAwLjI4NTcxNDMsIDAuMjg1NzE0My4uLlxuIn0= -->
+<pre><code>Observations: 19,387
+Variables: 12
+$ script_id           &lt;int&gt; 280, 280, 280, 280, 280, 280, 280, 623, 623, 623, 623, 623, 623,...
+$ imdb_character_name &lt;chr&gt; &quot;betty&quot;, &quot;carolyn johnson&quot;, &quot;eleanor&quot;, &quot;francesca johns&quot;, &quot;madge...
+$ words               &lt;int&gt; 311, 873, 138, 2251, 190, 723, 1908, 328, 409, 347, 2020, 366, 1...
+$ gender              &lt;chr&gt; &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;f&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;, &quot;f&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;, &quot;m&quot;,...
+$ age                 &lt;dbl&gt; 35, NA, NA, 46, 46, 38, 65, NA, 28, NA, 58, 53, 25, 39, 33, NA, ...
+$ imdb_id             &lt;chr&gt; &quot;tt0112579&quot;, &quot;tt0112579&quot;, &quot;tt0112579&quot;, &quot;tt0112579&quot;, &quot;tt0112579&quot;,...
+$ title               &lt;chr&gt; &quot;The Bridges of Madison County&quot;, &quot;The Bridges of Madison County&quot;...
+$ year                &lt;int&gt; 1995, 1995, 1995, 1995, 1995, 1995, 1995, 2001, 2001, 2001, 2001...
+$ gross               &lt;int&gt; 142, 142, 142, 142, 142, 142, 142, 37, 37, 37, 37, 37, 37, 37, 3...
+$ lines_data          &lt;chr&gt; &quot;433202343434344320343343433443343434343443434434433343444344434...
+$ fem_prop            &lt;dbl&gt; 0.7142857, 0.7142857, 0.7142857, 0.7142857, 0.7142857, 0.7142857...
+$ man_prop            &lt;dbl&gt; 0.2857143, 0.2857143, 0.2857143, 0.2857143, 0.2857143, 0.2857143...</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiTGluZSBkaXN0cmlidXRpb24gb24gY2luZW1hIgpvdXRwdXQ6CiAgaHRtbF9kb2N1bWVudDoKICAgIGRmX3ByaW50OiBwYWdlZAogICAgdG9jOiB5ZXMKICAgIHRvY19mbG9hdDogeWVzCiAgaHRtbF9ub3RlYm9vazoKICAgIHRvYzogeWVzCiAgICB0b2NfZmxvYXQ6IHllcwotLS0KCgpgYGB7ciBzZXR1cCwgZWNobz1GQUxTRSwgd2FybmluZz1GQUxTRSwgbWVzc2FnZT1GQUxTRX0KbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkoaGVyZSkKdGhlbWVfc2V0KHRoZW1lX2J3KCkpCmBgYAoKYGBge3IsIHdhcm5pbmc9RkFMU0V9CnJlYWRfY3N2KGhlcmUoImRhdGEvY2hhcmFjdGVyX2xpc3Q1LmNzdiIpLAogICAgICAgICAgICAgICAgICAgICAgcHJvZ3Jlc3MgPSBGQUxTRSwKICAgICAgICAgICAgICAgICAgICAgIGNvbF90eXBlcyA9IGNvbHMoCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNjcmlwdF9pZCA9IGNvbF9pbnRlZ2VyKCksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGltZGJfY2hhcmFjdGVyX25hbWUgPSBjb2xfY2hhcmFjdGVyKCksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcmRzID0gY29sX2ludGVnZXIoKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VuZGVyID0gY29sX2NoYXJhY3RlcigpLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhZ2UgPSBjb2xfY2hhcmFjdGVyKCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKSkgJT4lCiAgbXV0YXRlKGFnZSA9IGFzLm51bWVyaWMoYWdlKSkgLT4gY2hhcmFjdGVyc19saXN0CgpjaGFyYWN0ZXJzX2xpc3QgJT4lIAogIGdsaW1wc2UoKQoKYGBgCgoKYGBge3J9CiMgcmVhZF9jc3YoaGVyZSgiZGF0YS9jaGFyYWN0ZXJfbWFwcGluZy5jc3YiKSwKIyAgICAgICAgICAgICAgICAgICAgICAgcHJvZ3Jlc3MgPSBGQUxTRSwKIyAgICAgICAgICAgICAgICAgICAgICAgY29sX3R5cGVzID0gY29scygKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzY3JpcHRfaWQgPSBjb2xfaW50ZWdlcigpLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGltZGJfaWQgPSBjb2xfY2hhcmFjdGVyKCksCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2hhcmFjdGVyX2Zyb21fc2NyaXB0ID0gY29sX2NoYXJhY3RlcigpLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsb3Nlc3RfY2hhcmFjdGVyX25hbWVfZnJvbV9pbWRiX21hdGNoID0gY29sX2NoYXJhY3RlcigpLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsb3Nlc3RfaW1kYl9jaGFyYWN0ZXJfaWQgPSBjb2xfY2hhcmFjdGVyKCkpKSAtPgojICAgICAgICAgICAgICAgICAgICAgICBjaGFyYWN0ZXJzX21hcHBpbmcKIyAKIyBjaGFyYWN0ZXJzX21hcHBpbmcgJT4lIAojICAgZ2xpbXBzZSgpCmBgYAoKYGBge3J9CnJlYWRfY3N2KGhlcmUoImRhdGEvbWV0YV9kYXRhNy5jc3YiKSwKICAgICAgICAgICAgICAgICAgICAgIHByb2dyZXNzID0gRkFMU0UsCiAgICAgICAgIGNvbF90eXBlcyA9IGNvbHMoCiAgICAgICAgICAgICAgICAgICAgICAgIHNjcmlwdF9pZCA9IGNvbF9pbnRlZ2VyKCksCiAgICAgICAgICAgICAgICAgICAgICAgIGltZGJfaWQgPSBjb2xfY2hhcmFjdGVyKCksCiAgICAgICAgICAgICAgICAgICAgICAgIHRpdGxlID0gY29sX2NoYXJhY3RlcigpLAogICAgICAgICAgICAgICAgICAgICAgICB5ZWFyID0gY29sX2ludGVnZXIoKSwKICAgICAgICAgICAgICAgICAgICAgICAgZ3Jvc3MgPSBjb2xfaW50ZWdlcigpLAogICAgICAgICAgICAgICAgICAgICAgICBsaW5lc19kYXRhID0gY29sX2NoYXJhY3RlcigpCiAgICAgICAgICAgICAgICAgICAgICAgICkpIC0+IG1ldGFfZGF0YQoKbWV0YV9kYXRhICU+JSAKICBnbGltcHNlKCkKCmBgYAoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiTGluZSBkaXN0cmlidXRpb24gb24gY2luZW1hIgpvdXRwdXQ6CiAgaHRtbF9kb2N1bWVudDoKICAgIGRmX3ByaW50OiBwYWdlZAogICAgdG9jOiB5ZXMKICAgIHRvY19mbG9hdDogeWVzCiAgaHRtbF9ub3RlYm9vazoKICAgIHRvYzogeWVzCiAgICB0b2NfZmxvYXQ6IHllcwotLS0KCgpgYGB7ciBzZXR1cCwgZWNobz1GQUxTRSwgd2FybmluZz1GQUxTRSwgbWVzc2FnZT1GQUxTRX0KbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkoaGVyZSkKdGhlbWVfc2V0KHRoZW1lX2J3KCkpCmBgYAoKYGBge3IsIHdhcm5pbmc9RkFMU0V9CnJlYWRfY3N2KGhlcmUoImRhdGEvY2hhcmFjdGVyX2xpc3Q1LmNzdiIpLAogICAgICAgICAgICAgICAgICAgICAgcHJvZ3Jlc3MgPSBGQUxTRSwKICAgICAgICAgICAgICAgICAgICAgIGNvbF90eXBlcyA9IGNvbHMoCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHNjcmlwdF9pZCA9IGNvbF9pbnRlZ2VyKCksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGltZGJfY2hhcmFjdGVyX25hbWUgPSBjb2xfY2hhcmFjdGVyKCksCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHdvcmRzID0gY29sX2ludGVnZXIoKSwKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgZ2VuZGVyID0gY29sX2NoYXJhY3RlcigpLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBhZ2UgPSBjb2xfY2hhcmFjdGVyKCkKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKSkgJT4lCiAgbXV0YXRlKGFnZSA9IGFzLm51bWVyaWMoYWdlKSkgLT4gY2hhcmFjdGVyc19saXN0CgpjaGFyYWN0ZXJzX2xpc3QgJT4lIAogIGdsaW1wc2UoKQoKYGBgCgoKYGBge3J9CiMgcmVhZF9jc3YoaGVyZSgiZGF0YS9jaGFyYWN0ZXJfbWFwcGluZy5jc3YiKSwKIyAgICAgICAgICAgICAgICAgICAgICAgcHJvZ3Jlc3MgPSBGQUxTRSwKIyAgICAgICAgICAgICAgICAgICAgICAgY29sX3R5cGVzID0gY29scygKIyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzY3JpcHRfaWQgPSBjb2xfaW50ZWdlcigpLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGltZGJfaWQgPSBjb2xfY2hhcmFjdGVyKCksCiMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY2hhcmFjdGVyX2Zyb21fc2NyaXB0ID0gY29sX2NoYXJhY3RlcigpLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsb3Nlc3RfY2hhcmFjdGVyX25hbWVfZnJvbV9pbWRiX21hdGNoID0gY29sX2NoYXJhY3RlcigpLAojICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNsb3Nlc3RfaW1kYl9jaGFyYWN0ZXJfaWQgPSBjb2xfY2hhcmFjdGVyKCkpKSAtPgojICAgICAgICAgICAgICAgICAgICAgICBjaGFyYWN0ZXJzX21hcHBpbmcKIyAKIyBjaGFyYWN0ZXJzX21hcHBpbmcgJT4lIAojICAgZ2xpbXBzZSgpCmBgYAoKYGBge3J9CnJlYWRfY3N2KGhlcmUoImRhdGEvbWV0YV9kYXRhNy5jc3YiKSwKICAgICAgICAgICAgICAgICAgICAgIHByb2dyZXNzID0gRkFMU0UsCiAgICAgICAgIGNvbF90eXBlcyA9IGNvbHMoCiAgICAgICAgICAgICAgICAgICAgICAgIHNjcmlwdF9pZCA9IGNvbF9pbnRlZ2VyKCksCiAgICAgICAgICAgICAgICAgICAgICAgIGltZGJfaWQgPSBjb2xfY2hhcmFjdGVyKCksCiAgICAgICAgICAgICAgICAgICAgICAgIHRpdGxlID0gY29sX2NoYXJhY3RlcigpLAogICAgICAgICAgICAgICAgICAgICAgICB5ZWFyID0gY29sX2ludGVnZXIoKSwKICAgICAgICAgICAgICAgICAgICAgICAgZ3Jvc3MgPSBjb2xfaW50ZWdlcigpLAogICAgICAgICAgICAgICAgICAgICAgICBsaW5lc19kYXRhID0gY29sX2NoYXJhY3RlcigpCiAgICAgICAgICAgICAgICAgICAgICAgICkpIC0+IG1ldGFfZGF0YQoKbWV0YV9kYXRhICU+JSAKICBnbGltcHNlKCkKCmBgYAoKYGBge3J9CmxlZnRfam9pbihjaGFyYWN0ZXJzX2xpc3QsIAogICAgICAgICAgbWV0YV9kYXRhLCAKICAgICAgICAgIGJ5PWMoInNjcmlwdF9pZCIpKSAlPiUKICBncm91cF9ieSh0aXRsZSwgeWVhcikgJT4lCiAgZHJvcF9uYShncm9zcykgJT4lCiAgbXV0YXRlKGZlbV9wcm9wID0gKHN1bShnZW5kZXIgPT0gImYiKSAvIG4oKSksCiAgICAgICAgIG1hbl9wcm9wID0gKDEgLSBmZW1fcHJvcCkpICU+JSAKICB1bmdyb3VwKCkgLT4gc2NyaXB0c19kYXRhCgpzY3JpcHRzX2RhdGEgJT4lIAogIGdsaW1wc2UoKQpgYGAK</div>
 
 
 </div>
