@@ -17,6 +17,8 @@ library(here)
 theme_set(theme_bw())
 ```
 
+# Data Overview
+
 ```{r, warning=FALSE}
 read_csv(here("data/character_list5.csv"),
                       progress = FALSE,
@@ -32,22 +34,6 @@ read_csv(here("data/character_list5.csv"),
 characters_list %>% 
   glimpse()
 
-```
-
-
-```{r}
-# read_csv(here("data/character_mapping.csv"),
-#                       progress = FALSE,
-#                       col_types = cols(
-#                                     script_id = col_integer(),
-#                                     imdb_id = col_character(),
-#                                     character_from_script = col_character(),
-#                                     closest_character_name_from_imdb_match = col_character(),
-#                                     closest_imdb_character_id = col_character())) ->
-#                       characters_mapping
-# 
-# characters_mapping %>% 
-#   glimpse()
 ```
 
 ```{r}
@@ -67,6 +53,8 @@ meta_data %>%
 
 ```
 
+## Combinando Dados Originais
+
 ```{r}
 left_join(characters_list, 
           meta_data, 
@@ -79,4 +67,74 @@ left_join(characters_list,
 
 scripts_data %>% 
   glimpse()
+```
+
+## Words
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  ggplot(aes(x=words,
+             y=(..count..)/sum(..count..))) +
+  geom_histogram(binwidth = 250,
+                 boundary = 0,
+                 fill = "grey",
+                 color = "black")
+```
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  ggplot(aes(x="", 
+             y=words)) +
+  geom_violin(fill="grey",
+               width=0.5)
+```
+
+
+## Female Proportion 
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  ggplot(aes(x=fem_prop,
+             y=(..count..)/sum(..count..))) +
+  geom_histogram(binwidth = 0.05,
+                 boundary = 0,
+                 fill = "grey",
+                 color = "black")
+```
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  ggplot(aes(x="", 
+             y=fem_prop)) +
+  geom_violin(fill="grey",
+               width=0.5)
+```
+
+## Movie Year 
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  ggplot(aes(x=year)) +
+  geom_bar(fill = "grey",
+           color = "black")
+```
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  ggplot(aes(x="", 
+             y=year)) +
+  geom_violin(fill="grey",
+               width=0.5)
 ```
