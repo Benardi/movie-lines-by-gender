@@ -158,8 +158,8 @@ scripts_data %>%
   mutate(fem_words = ifelse(gender == "f",words,0),
          man_words = ifelse(gender == "m",words,0)) %>%
   group_by(title, year) %>%
-  mutate(mean_fem_words = sum(fem_words)/sum(gender == "f"),
-         mean_man_words = sum(fem_words)/sum(gender == "m")) %>% 
+  mutate(mean_fem_words = ifelse(sum(gender == "f") == 0, 0, sum(fem_words)/sum(gender == "f")),
+         mean_man_words = ifelse(sum(gender == "m") == 0, 0, sum(man_words)/sum(gender == "m"))) %>% 
   ungroup()  -> scripts_data
 
 scripts_data %>%
@@ -174,9 +174,11 @@ scripts_data %>%
 scripts_data %>%
   group_by(title,year) %>%
   unique() %>%
+  filter(!mean_fem_words == 0) %>%
   ggplot(aes(x=mean_fem_words,
              y=(..count..)/sum(..count..))) +
   geom_histogram(binwidth = 250,
+                 boundary = 0,
                  fill = "grey",
                  color = "black")
 ```
@@ -185,10 +187,33 @@ scripts_data %>%
 scripts_data %>%
   group_by(title,year) %>%
   unique() %>%
+  filter(!mean_fem_words == 0) %>%
+  ggplot(aes(x="", 
+             y=mean_fem_words)) +
+  geom_violin(fill="grey",
+               width=0.5)
+```
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  filter(!mean_man_words == 0) %>%
   ggplot(aes(x=mean_man_words,
              y=(..count..)/sum(..count..))) +
   geom_histogram(binwidth = 250,
                  boundary = 0,
                  fill = "grey",
                  color = "black")
+```
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  filter(!mean_man_words == 0) %>%
+  ggplot(aes(x="", 
+             y=mean_man_words)) +
+  geom_violin(fill="grey",
+               width=0.5)
 ```
