@@ -61,11 +61,9 @@ left_join(characters_list,
           by=c("script_id")) %>%
   group_by(title, year) %>%
   drop_na(gross) %>%
-  mutate(fem_prop = (sum(gender == "f") / n()),
-         man_prop = (1 - fem_prop)) %>% 
   ungroup() -> scripts_data
 
-scripts_data %>% 
+scripts_data %>%
   glimpse()
 ```
 
@@ -95,6 +93,22 @@ scripts_data %>%
 
 
 ## Female Proportion 
+
+```{r}
+scripts_data %>%
+  group_by(title, year) %>%
+  mutate(fem_prop = (sum(gender == "f") / n()),
+         man_prop = (1 - fem_prop)) %>% 
+  ungroup() -> scripts_data
+
+scripts_data %>%
+  select(title,
+         year,
+         fem_prop,
+         man_prop) %>%
+  sample_n(10)
+```
+
 
 ```{r}
 scripts_data %>%
@@ -137,4 +151,44 @@ scripts_data %>%
              y=year)) +
   geom_violin(fill="grey",
                width=0.5)
+```
+
+```{r}
+scripts_data %>%
+  mutate(fem_words = ifelse(gender == "f",words,0),
+         man_words = ifelse(gender == "m",words,0)) %>%
+  group_by(title, year) %>%
+  mutate(mean_fem_words = sum(fem_words)/sum(gender == "f"),
+         mean_man_words = sum(fem_words)/sum(gender == "m")) %>% 
+  ungroup()  -> scripts_data
+
+scripts_data %>%
+  select(title,
+         year,
+         mean_fem_words,
+         mean_man_words) %>%
+  sample_n(10)
+```
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  ggplot(aes(x=mean_fem_words,
+             y=(..count..)/sum(..count..))) +
+  geom_histogram(binwidth = 250,
+                 fill = "grey",
+                 color = "black")
+```
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  ggplot(aes(x=mean_man_words,
+             y=(..count..)/sum(..count..))) +
+  geom_histogram(binwidth = 250,
+                 boundary = 0,
+                 fill = "grey",
+                 color = "black")
 ```
