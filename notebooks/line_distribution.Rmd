@@ -12,8 +12,12 @@ output:
 
 
 ```{r setup, echo=FALSE, warning=FALSE, message=FALSE}
-library(tidyverse)
+
 library(here)
+library(cluster)
+library(tidyverse)
+library(broom)
+
 theme_set(theme_bw())
 ```
 
@@ -217,3 +221,105 @@ scripts_data %>%
   geom_violin(fill="grey",
                width=0.5)
 ```
+
+### GAP statistic
+
+A GAP compara a solução do agrupamento com cada k com a solução em um dataset onde não há estrutura de grupos. 
+
+```{r}
+plot_clusgap = function(clusgap, title="Gap Statistic calculation results"){
+    require("ggplot2")
+    gstab = data.frame(clusgap$Tab, k=1:nrow(clusgap$Tab))
+    p = ggplot(gstab, aes(k, gap)) + geom_line() + geom_point(size=5)
+    p = p + geom_errorbar(aes(ymax=gap+SE.sim, ymin=gap-SE.sim), width = .2)
+    p = p + ggtitle(title)
+    return(p)
+}
+```
+
+# ```{r}
+# scripts_data %>%
+#   select(year) %>% 
+#   clusGap(FUN = kmeans, nstart = 20, K.max = 3,B = 20) -> gaps
+# plot_clusgap(gaps)
+# ```
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  slice(1) %>%
+  ungroup() %>%
+  select(mean_fem_words,
+         mean_man_words,
+         gross) %>%
+  mutate_each(funs(as.vector(scale(.)))) -> x
+x
+  
+```
+
+
+```{r}
+gaps <- x %>% 
+    clusGap(FUN = kmeans,
+            nstart = 20,
+            K.max = 8,
+            B = 200,
+            iter.max=30)
+```
+
+```{r}
+plot_clusgap(gaps)
+```
+
+```{r}
+scripts_data %>%
+  group_by(title) %>%
+  slice(1) %>%
+  unique() %>%
+  ungroup() %>%
+  select(title,
+         mean_fem_words,
+         mean_man_words,
+         gross) -> y
+
+select(y, -title) %>%
+mutate_all(funs(scale)) -> x
+
+x
+```
+
+```{r}
+# row.names(dw2.scaled)  = dw2$repository_language
+# dists = dist(dw2.scaled, method = "euclidean")
+# hc = hclust(dists, method = "ward.D")
+# plot(hc, cex = .6)
+```
+
+```{r}
+library(GGally)
+data(crabs, package = "MASS")
+ggparcoord(crabs, columns = 4:8, groupColumn = "sp")
+```
+
+```{r}
+library(GGally)
+x <- rnorm(100)
+d1 <- data.frame(x1 = x, x2 = rnorm(x), x3 = x)
+d2 <- mutate(d1, x3 = -x)
+ggparcoord(d1)
+library(lattice)
+parallelplot(d1)
+```
+
+```{r}
+library (vegan)
+library (cluster)
+library(factoextra)
+
+data(varespec)
+dis = dist(x)^2
+res = kmeans(x,3)
+sil = silhouette (res$cluster, dis)
+plot(sil)
+```
+
