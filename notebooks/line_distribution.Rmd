@@ -17,6 +17,8 @@ library(here)
 library(cluster)
 library(tidyverse)
 library(broom)
+library(mclust)
+library(NbClust)
 
 theme_set(theme_bw())
 ```
@@ -222,6 +224,29 @@ scripts_data %>%
                width=0.5)
 ```
 
+### Scale Data
+
+```{r}
+scripts_data %>%
+  group_by(title) %>%
+  slice(1) %>%
+  unique() %>%
+  ungroup() %>%
+  select(title,
+         gross,
+         fem_prop,
+         mean_fem_words,
+         mean_man_words) -> data
+
+select(data, -title) %>%
+mutate_all(funs(scale)) -> scaled_data
+
+scaled_data %>% 
+  sample_n(10)
+```
+
+## Número K ótimo 
+
 ### GAP statistic
 
 A GAP compara a solução do agrupamento com cada k com a solução em um dataset onde não há estrutura de grupos. 
@@ -237,29 +262,8 @@ plot_clusgap = function(clusgap, title="Gap Statistic calculation results"){
 }
 ```
 
-# ```{r}
-# scripts_data %>%
-#   select(year) %>% 
-#   clusGap(FUN = kmeans, nstart = 20, K.max = 3,B = 20) -> gaps
-# plot_clusgap(gaps)
-# ```
-
 ```{r}
-scripts_data %>%
-  group_by(title,year) %>%
-  slice(1) %>%
-  ungroup() %>%
-  select(mean_fem_words,
-         mean_man_words,
-         gross) %>%
-  mutate_each(funs(as.vector(scale(.)))) -> x
-x
-  
-```
-
-
-```{r}
-gaps <- x %>% 
+gaps <- scaled_data %>% 
     clusGap(FUN = kmeans,
             nstart = 20,
             K.max = 8,
@@ -272,27 +276,84 @@ plot_clusgap(gaps)
 ```
 
 ```{r}
-scripts_data %>%
-  group_by(title) %>%
-  slice(1) %>%
-  unique() %>%
-  ungroup() %>%
-  select(title,
-         mean_fem_words,
-         mean_man_words,
-         gross) -> y
+row.names(scaled_data)  = data$title
+dists = dist(scaled_data, method = "euclidean")
+hc = hclust(dists, method = "ward.D")
+hcd <- as.dendrogram(hc)
+# plot(hc)
 
-select(y, -title) %>%
-mutate_all(funs(scale)) -> x
-
-x
+nodePar <- list(lab.cex = 0.1, pch = c(NA, 19), 
+                cex = 0.1, col = "white")
+# Customized plot; remove labels
+plot(hcd,
+     ylab = "Height", 
+     nodePar = nodePar,
+     leaflab = "none",
+     horiz = TRUE)
 ```
 
 ```{r}
-# row.names(dw2.scaled)  = dw2$repository_language
-# dists = dist(dw2.scaled, method = "euclidean")
-# hc = hclust(dists, method = "ward.D")
-# plot(hc, cex = .6)
+set.seed(123)
+# Compute and plot wss for k = 2 to k = 15.
+k.max <- 15
+
+wss <- sapply(1:k.max, 
+              function(k){kmeans(scaled_data, k, nstart=50,iter.max = 15 )$tot.withinss})
+plot(1:k.max, wss,
+     type="b", pch = 19, frame = FALSE, 
+     xlab="Number of clusters K",
+     ylab="Total within-clusters sum of squares")
+```
+
+* Pelo Elbow method 4 parece ser um bom número de grupos.
+
+```{r}
+library (vegan)
+library (cluster)
+
+data(varespec)
+dis = dist(scaled_data)^2
+res = kmeans(scaled_data,3)
+sil = silhouette (res$cluster, dis)
+plot(sil)
+```
+
+
+```{r}
+d_clust <- Mclust(as.matrix(scaled_data), G=1:15, 
+                  modelNames = mclust.options("emModelNames"))
+d_clust$BIC
+```
+
+```{r}
+plot(d_clust$BIC)
+```
+
+```{r}
+nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean", 
+              min.nc=2, max.nc=5, method = "kmeans", 
+              index = "all", alphaBeale = 0.1)
+hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
+```
+
+
+```{r}
+# toclust = x %>% 
+#     rownames_to_column(var = "language") %>% 
+#     select(1:5) 
+# dists = toclust %>% 
+#     select(-language) %>% 
+#     dist() # só para plotar silhouetas depois
+# km = toclust %>% 
+#     select(-language) %>% 
+#     kmeans(centers = n_clusters, nstart = 20)
+# km %>% 
+#     augment(toclust) %>% 
+#     gather(key = "variável", value = "valor", -language, -.cluster) %>% 
+#     ggplot(aes(x = `variável`, y = valor, group = language, colour = .cluster)) + 
+#     geom_point(alpha = 0.2) + 
+#     geom_line(alpha = .5) + 
+#     facet_wrap(~ .cluster) 
 ```
 
 ```{r}
@@ -309,17 +370,5 @@ d2 <- mutate(d1, x3 = -x)
 ggparcoord(d1)
 library(lattice)
 parallelplot(d1)
-```
-
-```{r}
-library (vegan)
-library (cluster)
-library(factoextra)
-
-data(varespec)
-dis = dist(x)^2
-res = kmeans(x,3)
-sil = silhouette (res$cluster, dis)
-plot(sil)
 ```
 
