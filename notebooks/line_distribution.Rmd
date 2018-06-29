@@ -381,28 +381,25 @@ ggplotly(p)
 ```
 
 ```{r}
+n_clusters = 3
+
 row.names(scaled_data) <- data$title
 
 toclust <- scaled_data %>% 
     rownames_to_column(var = "title") 
 
-km %>%
-    augment(toclust) %>%
-    gather(key = "variável", value = "valor", -.cluster) %>%
-    ggplot(aes(x = `variável`, y = valor, colour = .cluster)) +
-    geom_point(alpha = 0.2) +
-    geom_line(alpha = .5) +
-    facet_wrap(~ .cluster)
-```
+km = toclust %>% 
+    select(-title) %>% 
+    kmeans(centers = n_clusters, nstart = 20)
 
-```{r}
-# dd <- iconv(data$title, "latin1", "UTF-8")
-for(txt in meta_data$title){
-  if(!validUTF8(txt)){
-  print(txt)    
-  }
-
-}
+km %>% 
+    augment(toclust) %>% 
+    gather(key = "variável", value = "valor", -title, -.cluster) %>% 
+    ggplot(aes(x = `variável`, y = valor, group = title, colour = .cluster)) + 
+    geom_point(alpha = 0.2) + 
+    geom_line(alpha = .5) + 
+    facet_wrap(~ .cluster) +
+    coord_flip()
 
 ```
 
