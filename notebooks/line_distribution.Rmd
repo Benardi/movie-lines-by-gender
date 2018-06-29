@@ -1,11 +1,11 @@
 ---
 title: "Line distribution on cinema"
 output:
-  html_document:
-    df_print: paged
+  html_notebook:
     toc: yes
     toc_float: yes
-  html_notebook:
+  html_document:
+    df_print: paged
     toc: yes
     toc_float: yes
 ---
@@ -14,11 +14,15 @@ output:
 ```{r setup, echo=FALSE, warning=FALSE, message=FALSE}
 
 library(here)
+library(broom)
+library(vegan)
+library(mclust)
+library(plotly)
+library(NbClust)
+library(lattice)
 library(cluster)
 library(tidyverse)
-library(broom)
-library(mclust)
-library(NbClust)
+library(ggfortify)
 
 theme_set(theme_bw())
 ```
@@ -59,7 +63,7 @@ meta_data %>%
 
 ```
 
-## Combinando Dados Originais
+#### Combinando Dados Originais
 
 ```{r}
 left_join(characters_list, 
@@ -224,7 +228,7 @@ scripts_data %>%
                width=0.5)
 ```
 
-### Scale Data
+## Scale Data
 
 ```{r}
 scripts_data %>%
@@ -245,9 +249,9 @@ scaled_data %>%
   sample_n(10)
 ```
 
-## Número K ótimo 
+#  Número K ótimo 
 
-### GAP statistic
+## GAP statistic
 
 A GAP compara a solução do agrupamento com cada k com a solução em um dataset onde não há estrutura de grupos. 
 
@@ -275,22 +279,7 @@ gaps <- scaled_data %>%
 plot_clusgap(gaps)
 ```
 
-```{r}
-row.names(scaled_data)  = data$title
-dists = dist(scaled_data, method = "euclidean")
-hc = hclust(dists, method = "ward.D")
-hcd <- as.dendrogram(hc)
-# plot(hc)
-
-nodePar <- list(lab.cex = 0.1, pch = c(NA, 19), 
-                cex = 0.1, col = "white")
-# Customized plot; remove labels
-plot(hcd,
-     ylab = "Height", 
-     nodePar = nodePar,
-     leaflab = "none",
-     horiz = TRUE)
-```
+## Elbow Method
 
 ```{r}
 set.seed(123)
@@ -305,12 +294,11 @@ plot(1:k.max, wss,
      ylab="Total within-clusters sum of squares")
 ```
 
-* Pelo Elbow method 4 parece ser um bom número de grupos.
+* Pelo Elbow method 4 ou 3 parece ser um bom número de grupos.
+
+## Silhouette
 
 ```{r}
-library (vegan)
-library (cluster)
-
 data(varespec)
 dis = dist(scaled_data)^2
 res = kmeans(scaled_data,3)
@@ -318,16 +306,23 @@ sil = silhouette (res$cluster, dis)
 plot(sil)
 ```
 
+## Bayesian Information Criterion
 
-```{r}
+```{r echo=FALSE, message=FALSE}
 d_clust <- Mclust(as.matrix(scaled_data), G=1:15, 
                   modelNames = mclust.options("emModelNames"))
 d_clust$BIC
 ```
 
+* O Bayesian Information Criterion nos sugere K= {9,8,7} como melhores soluções
+
 ```{r}
 plot(d_clust$BIC)
 ```
+
+* Visualmente K= 3 e K = 4 representam o ganho mais significativo em termos de BIC (Bayesian Information Criterion) 
+
+## Hubert Index e D Index
 
 ```{r}
 nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean", 
@@ -336,6 +331,9 @@ nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean",
 hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 ```
 
+* O índice de Hubert e o índice D sugerem K = 3  como a melhor solução
+
+# Trivia
 
 ```{r}
 # toclust = x %>% 
@@ -372,3 +370,12 @@ library(lattice)
 parallelplot(d1)
 ```
 
+```{r}
+scaled_data %>%
+    kmeans(3, nstart=100) -> km
+
+p <- autoplot(km, data=scaled_data, frame = TRUE)
+
+ggplotly(p)
+
+```
