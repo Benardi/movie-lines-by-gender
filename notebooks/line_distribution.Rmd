@@ -1,11 +1,11 @@
 ---
 title: "Line distribution on cinema"
 output:
-  html_notebook:
-    toc: yes
-    toc_float: yes
   html_document:
     df_print: paged
+    toc: yes
+    toc_float: yes
+  html_notebook:
     toc: yes
     toc_float: yes
 ---
@@ -78,15 +78,41 @@ scripts_data %>%
   glimpse()
 ```
 
-## Words
+```{r}
+scripts_data %>%
+  mutate(fem_words = ifelse(gender == "f",words,0),
+         man_words = ifelse(gender == "m",words,0)) %>%
+  group_by(title, year) %>%
+  mutate(total_fem_words = sum(fem_words),
+         total_man_words = sum(man_words)) %>%
+  filter(total_fem_words !=  0) %>%
+  filter(total_man_words !=  0) %>%
+    mutate(f_m_ratio = sum(gender == "f")/sum(gender == "m"),
+           f_m_wordratio = total_fem_words/total_man_words) %>%
+  ungroup()  -> scripts_data
+
+scripts_data %>%
+  select(title,
+         year,
+         f_m_ratio,
+         f_m_wordratio) %>%
+  sample_n(10)
+```
+
+```{r}
+summary(scripts_data$f_m_wordratio)
+```
+
+
+## Female/Male Word Ratio
 
 ```{r}
 scripts_data %>%
   group_by(title,year) %>%
   unique() %>%
-  ggplot(aes(x=words,
+  ggplot(aes(x=f_m_wordratio,
              y=(..count..)/sum(..count..))) +
-  geom_histogram(binwidth = 250,
+  geom_histogram(binwidth = 1,
                  boundary = 0,
                  fill = "grey",
                  color = "black")
@@ -103,31 +129,15 @@ scripts_data %>%
 ```
 
 
-## Female Proportion 
-
-```{r}
-scripts_data %>%
-  group_by(title, year) %>%
-  mutate(fem_prop = (sum(gender == "f") / n()),
-         man_prop = (1 - fem_prop)) %>% 
-  ungroup() -> scripts_data
-
-scripts_data %>%
-  select(title,
-         year,
-         fem_prop,
-         man_prop) %>%
-  sample_n(10)
-```
-
+## Female/Male Ratio 
 
 ```{r}
 scripts_data %>%
   group_by(title,year) %>%
   unique() %>%
-  ggplot(aes(x=fem_prop,
+  ggplot(aes(x=f_m_ratio,
              y=(..count..)/sum(..count..))) +
-  geom_histogram(binwidth = 0.05,
+  geom_histogram(binwidth = 0.1,
                  boundary = 0,
                  fill = "grey",
                  color = "black")
@@ -138,7 +148,7 @@ scripts_data %>%
   group_by(title,year) %>%
   unique() %>%
   ggplot(aes(x="", 
-             y=fem_prop)) +
+             y=f_m_ratio)) +
   geom_violin(fill="grey",
                width=0.5)
 ```
@@ -164,31 +174,15 @@ scripts_data %>%
                width=0.5)
 ```
 
-```{r}
-scripts_data %>%
-  mutate(fem_words = ifelse(gender == "f",words,0),
-         man_words = ifelse(gender == "m",words,0)) %>%
-  group_by(title, year) %>%
-  mutate(mean_fem_words = ifelse(sum(gender == "f") == 0, 0, sum(fem_words)/sum(gender == "f")),
-         mean_man_words = ifelse(sum(gender == "m") == 0, 0, sum(man_words)/sum(gender == "m"))) %>% 
-  ungroup()  -> scripts_data
-
-scripts_data %>%
-  select(title,
-         year,
-         mean_fem_words,
-         mean_man_words) %>%
-  sample_n(10)
-```
+## Gross 
 
 ```{r}
 scripts_data %>%
   group_by(title,year) %>%
   unique() %>%
-  filter(!mean_fem_words == 0) %>%
-  ggplot(aes(x=mean_fem_words,
+  ggplot(aes(x=gross,
              y=(..count..)/sum(..count..))) +
-  geom_histogram(binwidth = 250,
+  geom_histogram(binwidth = 50,
                  boundary = 0,
                  fill = "grey",
                  color = "black")
@@ -198,38 +192,13 @@ scripts_data %>%
 scripts_data %>%
   group_by(title,year) %>%
   unique() %>%
-  filter(!mean_fem_words == 0) %>%
   ggplot(aes(x="", 
-             y=mean_fem_words)) +
+             y=gross)) +
   geom_violin(fill="grey",
                width=0.5)
 ```
 
-```{r}
-scripts_data %>%
-  group_by(title,year) %>%
-  unique() %>%
-  filter(!mean_man_words == 0) %>%
-  ggplot(aes(x=mean_man_words,
-             y=(..count..)/sum(..count..))) +
-  geom_histogram(binwidth = 250,
-                 boundary = 0,
-                 fill = "grey",
-                 color = "black")
-```
-
-```{r}
-scripts_data %>%
-  group_by(title,year) %>%
-  unique() %>%
-  filter(!mean_man_words == 0) %>%
-  ggplot(aes(x="", 
-             y=mean_man_words)) +
-  geom_violin(fill="grey",
-               width=0.5)
-```
-
-## Scale Data
+## Scaling Data
 
 ```{r}
 scripts_data %>%
@@ -238,11 +207,9 @@ scripts_data %>%
   unique() %>%
   ungroup() %>%
   select(title,
-         year,
          gross,
-         fem_prop,
-         mean_fem_words,
-         mean_man_words) -> data
+         f_m_ratio,
+         f_m_wordratio) -> data
 
 select(data, -title) %>%
 mutate_all(funs(scale)) -> scaled_data
@@ -281,6 +248,8 @@ gaps <- scaled_data %>%
 plot_clusgap(gaps)
 ```
 
+* 3 ou 6 grupos parece apropiado, mas como 6 é precedido por uma série de quedas 3 seria uma melhor opção.
+
 ## Elbow Method
 
 ```{r}
@@ -296,33 +265,18 @@ plot(1:k.max, wss,
      ylab="Total within-clusters sum of squares")
 ```
 
-* Pelo Elbow method 4 ou 3 parece ser um bom número de grupos.
-
-## Silhouette
-
-```{r}
-data(varespec)
-dis = dist(scaled_data)^2
-res = kmeans(scaled_data,3)
-sil = silhouette (res$cluster, dis)
-plot(sil)
-```
+* Pelo Elbow method 3 parece ser um bom número de grupos devido à queda de 3 para 4.
 
 ## Bayesian Information Criterion
 
 ```{r echo=FALSE, message=FALSE}
 d_clust <- Mclust(as.matrix(scaled_data), G=1:15, 
                   modelNames = mclust.options("emModelNames"))
-d_clust$BIC
-```
 
-* O Bayesian Information Criterion nos sugere K= {9,8,7} como melhores soluções
-
-```{r}
 plot(d_clust$BIC)
 ```
 
-* Visualmente K= 3 e K = 4 representam o ganho mais significativo em termos de BIC (Bayesian Information Criterion) 
+* Visualmente K= 2 e K = 3 representam o ganho mais significativo em termos de BIC (Bayesian Information Criterion) 
 
 ## Hubert Index e D Index
 
@@ -335,44 +289,17 @@ hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 
 * O índice de Hubert e o índice D sugerem K = 3  como a melhor solução
 
-# Trivia
+# K-Means 
+
+****
+
+## Clustering
 
 ```{r}
-# toclust = x %>% 
-#     rownames_to_column(var = "language") %>% 
-#     select(1:5) 
-# dists = toclust %>% 
-#     select(-language) %>% 
-#     dist() # só para plotar silhouetas depois
-# km = toclust %>% 
-#     select(-language) %>% 
-#     kmeans(centers = n_clusters, nstart = 20)
-# km %>% 
-#     augment(toclust) %>% 
-#     gather(key = "variável", value = "valor", -language, -.cluster) %>% 
-#     ggplot(aes(x = `variável`, y = valor, group = language, colour = .cluster)) + 
-#     geom_point(alpha = 0.2) + 
-#     geom_line(alpha = .5) + 
-#     facet_wrap(~ .cluster) 
-```
+n_clusters = 3
 
-```{r}
-library(GGally)
-data(crabs, package = "MASS")
-ggparcoord(crabs, columns = 4:8, groupColumn = "sp")
-```
-
-```{r}
-library(GGally)
-
-ggparcoord(scaled_data)
-library(lattice)
-parallelplot(scaled_data)
-```
-
-```{r}
 scaled_data %>%
-    kmeans(3, nstart=100) -> km
+    kmeans(n_clusters, iter.max = 100, nstart = 20) -> km
 
 p <- autoplot(km, data=scaled_data, frame = TRUE)  
 
@@ -380,9 +307,9 @@ ggplotly(p)
 
 ```
 
-```{r}
-n_clusters = 3
+* É possível ver os 3 grupos nitidamente distintos, por meio de um zoom percebe-se que embora o grupo 1 e o grupo 3 estejam próximos o overlap é basicamente inexistente.
 
+```{r, warning=FALSE}
 row.names(scaled_data) <- data$title
 
 toclust <- scaled_data %>% 
@@ -390,7 +317,7 @@ toclust <- scaled_data %>%
 
 km = toclust %>% 
     select(-title) %>% 
-    kmeans(centers = n_clusters, nstart = 20)
+    kmeans(centers = n_clusters, iter.max = 100, nstart = 20)
 
 km %>% 
     augment(toclust) %>% 
@@ -402,4 +329,33 @@ km %>%
     coord_flip()
 
 ```
+
+* Grupo 1 **Yes, We Can**
+    * Menor Faturamento 
+    * Mais dialógo para as mulheres 
+    * Maior taxa de personagens femininos
+
+* Grupo 2 - **It's a man's world**   
+    * Maior faturamento entre todos
+    * Menor taxa de dialógo para as mulheres
+    * Menor taxa de personagens femininos
+
+* Grupo 3 - **Sitting on the Fence**
+    * Mediano em termos de dialógo, personagens e faturamento 
+
+## Silhouette
+
+```{r}
+dists = scaled_data %>% 
+  dist()
+
+scaled_data %>%
+    kmeans(3, iter.max = 100, nstart = 20) -> km
+
+
+silhouette(km$cluster, dists) %>%
+   plot(col = RColorBrewer::brewer.pal(4, "Set2"),border=NA)
+```
+
+* O valor de 0.6 da silhueta significa que a nossa clusterização foi razoável. ヾ(⌐■_■)ノ♪
 
