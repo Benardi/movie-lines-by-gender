@@ -112,7 +112,8 @@ scripts_data %>%
   geom_histogram(binwidth = 0.1,
                  boundary = 0,
                  fill = "grey",
-                 color = "black")
+                 color = "black") +
+  labs(y="Frequência Relativa")
 ```
 
 * Em alguns raríssimos exemplos há muito mais dialógo feminino que feminino. 
@@ -127,7 +128,8 @@ scripts_data %>%
              y=(..count..)/sum(..count..))) +
   geom_histogram(binwidth = 0.1,
                  fill = "grey",
-                 color = "black")
+                 color = "black") +
+  labs(y="Frequência Relativa")
 ```
 
 * Uma vez que filtramos os casos mais raros é possível ver que há uma forte domínio do dialógo masculino sobre o feminino nos filmes.
@@ -152,6 +154,7 @@ scripts_data %>%
 ```{r}
 scripts_data %>%
   group_by(title,year) %>%
+  slice(1) %>%
   unique() %>%
   ggplot(aes(x=f_m_ratio,
              y=(..count..)/sum(..count..))) +
@@ -159,7 +162,8 @@ scripts_data %>%
                  boundary = 0,
                  fill = "grey",
                  color = "black") +
-  scale_x_continuous(breaks = seq(0,10,0.5))
+  scale_x_continuous(breaks = seq(0,10,0.5)) +
+  labs(y="Frequência Relativa")
 ```
 
 * É nítido o domínio de personagens masculinos
@@ -167,6 +171,7 @@ scripts_data %>%
 ```{r}
 scripts_data %>%
   group_by(title,year) %>%
+  slice(1) %>%
   unique() %>%
   ggplot(aes(x="", 
              y=f_m_ratio)) +
@@ -181,10 +186,12 @@ scripts_data %>%
 ```{r}
 scripts_data %>%
   group_by(title,year) %>%
+  slice(1) %>%
   unique() %>%
   ggplot(aes(x=year)) +
   geom_bar(fill = "grey",
-           color = "black")
+           color = "black") +
+  labs(y="Frequência Absoluta")
 ```
 
 * Os filmes são sua maioria recentes, a quase totalidade dos filmes foi lançada a partir dos anos 1990.
@@ -192,6 +199,7 @@ scripts_data %>%
 ```{r}
 scripts_data %>%
   group_by(title,year) %>%
+  slice(1) %>%
   unique() %>%
   ggplot(aes(x="", 
              y=year)) +
@@ -199,7 +207,7 @@ scripts_data %>%
                width=0.5)
 ```
 
-* Ainda é possível ver uma presença significativa de filmes do começo dos anos 1980.
+* Ainda é possível ver uma presença relevante de filmes do começo dos anos 1980.
 * Existem alguns filmes anteriores aos próprio anos 1950.
 
 ## Faturamento do filme 
@@ -207,13 +215,15 @@ scripts_data %>%
 ```{r}
 scripts_data %>%
   group_by(title,year) %>%
+  slice(1) %>%
   unique() %>%
   ggplot(aes(x=gross,
              y=(..count..)/sum(..count..))) +
   geom_histogram(binwidth = 50,
                  boundary = 0,
                  fill = "grey",
-                 color = "black")
+                 color = "black") +
+  labs(y="Frequência Relativa")
 ```
 
 * Faturamento baixo ou razoável para a maior parte dos filmes.
@@ -221,7 +231,8 @@ scripts_data %>%
 
 ```{r}
 scripts_data %>%
-  group_by(title,year) %>%
+  group_by(title,year) %>%   
+  slice(1) %>%
   unique() %>%
   ggplot(aes(x="", 
              y=gross)) +
@@ -326,7 +337,7 @@ hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 
 ****
 
-## Clustering
+## Agrupamento
 
 ```{r}
 n_clusters = 3
@@ -382,7 +393,7 @@ km %>%
 * Grupo 3 - **Sitting on the Fence**
     * Mediano em termos de dialógo, personagens e faturamento 
 
-## Silhouette
+## Qualidade da clusterização / Silhueta
 
 ```{r}
 dists = scaled_data %>% 
