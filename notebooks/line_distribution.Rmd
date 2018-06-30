@@ -1,11 +1,12 @@
 ---
-title: "Line distribution on cinema"
+title: "Distribuição de dialógo em filmes"
+author: "José Benardi de Souza Nunes"
 output:
-  html_document:
-    df_print: paged
+  html_notebook:
     toc: yes
     toc_float: yes
-  html_notebook:
+  html_document:
+    df_print: paged
     toc: yes
     toc_float: yes
 ---
@@ -99,37 +100,54 @@ scripts_data %>%
   sample_n(10)
 ```
 
-```{r}
-summary(scripts_data$f_m_wordratio)
-```
-
-
-## Female/Male Word Ratio
+## Proporção entre dialógo feminino e masculino
 
 ```{r}
 scripts_data %>%
   group_by(title,year) %>%
+  slice(1) %>%
   unique() %>%
   ggplot(aes(x=f_m_wordratio,
              y=(..count..)/sum(..count..))) +
-  geom_histogram(binwidth = 1,
+  geom_histogram(binwidth = 0.1,
                  boundary = 0,
                  fill = "grey",
                  color = "black")
 ```
 
+* Em alguns raríssimos exemplos há muito mais dialógo feminino que feminino. 
+
 ```{r}
 scripts_data %>%
   group_by(title,year) %>%
+  slice(1) %>%
+  unique() %>%
+  filter(f_m_wordratio < 10) %>%
+  ggplot(aes(x=f_m_wordratio,
+             y=(..count..)/sum(..count..))) +
+  geom_histogram(binwidth = 0.1,
+                 fill = "grey",
+                 color = "black")
+```
+
+* Uma vez que filtramos os casos mais raros é possível ver que há uma forte domínio do dialógo masculino sobre o feminino nos filmes.
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  slice(1) %>%
   unique() %>%
   ggplot(aes(x="", 
-             y=words)) +
+             y=f_m_wordratio)) +
   geom_violin(fill="grey",
                width=0.5)
 ```
 
+* É ainda mais óbvio:
+    * A presença de alguns poucos casos de completo domínio do diálogo feminino
+    * O geral domínio do dialógo masculino sobre feminino
 
-## Female/Male Ratio 
+## Proporção entre personagens femininos e masculinos 
 
 ```{r}
 scripts_data %>%
@@ -140,8 +158,11 @@ scripts_data %>%
   geom_histogram(binwidth = 0.1,
                  boundary = 0,
                  fill = "grey",
-                 color = "black")
+                 color = "black") +
+  scale_x_continuous(breaks = seq(0,10,0.5))
 ```
+
+* É nítido o domínio de personagens masculinos
 
 ```{r}
 scripts_data %>%
@@ -153,7 +174,9 @@ scripts_data %>%
                width=0.5)
 ```
 
-## Movie Year 
+* Além do forte domínio de personangens masculinos é possível ver a existência de algumas instâncias, embora raras de uma avassaladora presença femininina, (e.g 10 vezes mais mulheres que homens).
+
+## Ano do filme 
 
 ```{r}
 scripts_data %>%
@@ -163,6 +186,8 @@ scripts_data %>%
   geom_bar(fill = "grey",
            color = "black")
 ```
+
+* Os filmes são sua maioria recentes, a quase totalidade dos filmes foi lançada a partir dos anos 1990.
 
 ```{r}
 scripts_data %>%
@@ -174,7 +199,10 @@ scripts_data %>%
                width=0.5)
 ```
 
-## Gross 
+* Ainda é possível ver uma presença significativa de filmes do começo dos anos 1980.
+* Existem alguns filmes anteriores aos próprio anos 1950.
+
+## Faturamento do filme 
 
 ```{r}
 scripts_data %>%
@@ -188,6 +216,9 @@ scripts_data %>%
                  color = "black")
 ```
 
+* Faturamento baixo ou razoável para a maior parte dos filmes.
+* Alguns poucos filmes tiveram um faturamento esmagador.
+
 ```{r}
 scripts_data %>%
   group_by(title,year) %>%
@@ -198,7 +229,9 @@ scripts_data %>%
                width=0.5)
 ```
 
-## Scaling Data
+* Resultados similares aos do respectivo histograma.
+
+## Aplicando escala apropriada aos dados.
 
 ```{r}
 scripts_data %>%
@@ -220,9 +253,9 @@ scaled_data %>%
 
 #  Número K ótimo 
 
-## GAP statistic
+## Estatística GAP 
 
-A GAP compara a solução do agrupamento com cada k com a solução em um dataset onde não há estrutura de grupos. 
+A estatística GAP compara a solução do agrupamento com cada k com a solução em um dataset onde não há estrutura de grupos. 
 
 ```{r}
 plot_clusgap = function(clusgap, title="Gap Statistic calculation results"){
@@ -330,15 +363,21 @@ km %>%
 
 ```
 
-* Grupo 1 **Yes, We Can**
+<br>
+
+* Grupo 1 - **We Can Do It!**
     * Menor Faturamento 
     * Mais dialógo para as mulheres 
     * Maior taxa de personagens femininos
 
-* Grupo 2 - **It's a man's world**   
+<br>
+
+* Grupo 2 - **It's A Man's Man's Man's World**   
     * Maior faturamento entre todos
     * Menor taxa de dialógo para as mulheres
     * Menor taxa de personagens femininos
+
+<br>
 
 * Grupo 3 - **Sitting on the Fence**
     * Mediano em termos de dialógo, personagens e faturamento 
