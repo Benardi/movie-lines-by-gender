@@ -42,12 +42,6 @@ readr::read_csv(here("data/character_list5.csv"),
                                     )) %>%
   mutate(age = as.numeric(age)) -> characters_list
 
-characters_list %>% 
-  glimpse()
-
-```
-
-```{r}
 readr::read_csv(here("data/meta_data7.csv"),
                       progress = FALSE,
          col_types = cols(
@@ -59,11 +53,9 @@ readr::read_csv(here("data/meta_data7.csv"),
                         lines_data = col_character()
                         )) %>%
   mutate(title = iconv(title,"latin1", "UTF-8")) -> meta_data
-
-meta_data %>%
-  glimpse()
-
 ```
+
+<br>
 
 #### Combinando Dados Originais
 
@@ -100,7 +92,9 @@ scripts_data %>%
   sample_n(10)
 ```
 
-## Proporção entre dialógo feminino e masculino
+## Exploração dos Dados 
+
+### Proporção entre dialógo feminino e masculino
 
 ```{r}
 scripts_data %>%
@@ -149,7 +143,7 @@ scripts_data %>%
     * A presença de alguns poucos casos de completo domínio do diálogo feminino
     * O geral domínio do dialógo masculino sobre feminino
 
-## Proporção entre personagens femininos e masculinos 
+### Proporção entre personagens femininos e masculinos 
 
 ```{r}
 scripts_data %>%
@@ -181,7 +175,7 @@ scripts_data %>%
 
 * Além do forte domínio de personangens masculinos é possível ver a existência de algumas instâncias, embora raras de uma avassaladora presença femininina, (e.g 10 vezes mais mulheres que homens).
 
-## Ano do filme 
+### Ano do filme 
 
 ```{r}
 scripts_data %>%
@@ -210,7 +204,7 @@ scripts_data %>%
 * Ainda é possível ver uma presença relevante de filmes do começo dos anos 1980.
 * Existem alguns filmes anteriores aos próprio anos 1950.
 
-## Faturamento do filme 
+### Faturamento do filme 
 
 ```{r}
 scripts_data %>%
@@ -376,22 +370,60 @@ km %>%
 
 <br>
 
-* Grupo 1 - **We Can Do It!**
-    * Menor Faturamento 
-    * Mais dialógo para as mulheres 
-    * Maior taxa de personagens femininos
+***
+
+Grupo 1 - **We Can Do It!**
+
+  * Menor Faturamento 
+  * Mais dialógo para as mulheres 
+  * Maior taxa de personagens femininos
+    
+<br>
+
+O Grupo 1 - **We Can Do It!** é o grupo de filmes de maior representação feminina, quer seja em proporção de personagens femininos como em proporção de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo das menores taxas de faturamento. Isso sugere uma infeliz associação negativa entre a representação feminina em filmes e o faturamento destes. 
 
 <br>
 
-* Grupo 2 - **It's A Man's Man's Man's World**   
-    * Maior faturamento entre todos
-    * Menor taxa de dialógo para as mulheres
-    * Menor taxa de personagens femininos
+
+```
+O nome do grupo se refere ao famoso cartaz de J. Howard Miller de 1943 incentivado as mulheres a participar no esforço de guerra nas fábricas. 
+```
 
 <br>
 
-* Grupo 3 - **Sitting on the Fence**
-    * Mediano em termos de dialógo, personagens e faturamento 
+***
+
+Grupo 2 - **It's A Man's Man's Man's World**   
+
+* Maior faturamento entre todos
+* Menor taxa de dialógo para as mulheres
+* Menor taxa de personagens femininos
+    
+<br>
+
+O Grupo 2 - **It's A Man's Man's Man's World** é o grupo de filmes de menor representação feminina, quer seja em proporção de personagens femininos como em proporção de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo de maiores taxas de faturamento. Isso sugere uma infeliz associação positiva entre ausência de  representação feminina em filmes e o faturamento destes. 
+
+<br>
+
+```
+O nome do grupo se refere à música de James Brown, a qual foi escrita por sua então namorada Betty Jean Newsome como um comentário sobre a relação entre os sexos.
+```
+
+<br>
+
+***
+
+Grupo 3 - **Em cima do muro**
+
+  * Filmes medianos em termos de proporção de personagens femininos, proporção de dialógos dedicados a personagens femininos e faturamento.
+    
+<br>
+
+```
+O nome do grupo se refere à expressão que significa não tomar partido.
+```
+
+<br>
 
 ## Qualidade da clusterização / Silhueta
 
@@ -406,6 +438,8 @@ scaled_data %>%
 silhouette(km$cluster, dists) %>%
    plot(col = RColorBrewer::brewer.pal(4, "Set2"),border=NA)
 ```
+
+<br>
 
 * O valor de 0.6 da silhueta significa que a nossa clusterização foi razoável. ヾ(⌐■_■)ノ♪
 
