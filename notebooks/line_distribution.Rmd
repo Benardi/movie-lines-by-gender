@@ -1,6 +1,8 @@
 ---
 title: "Distribuição de dialógo em filmes"
+subtitle: 'Questões de Gênero em dialógos de filme'
 author: "José Benardi de Souza Nunes"
+date: 29/06/2018
 output:
   html_notebook:
     toc: yes
@@ -11,6 +13,19 @@ output:
     toc_float: yes
 ---
 
+<br>
+
+# Introdução
+
+<br>
+
+> Análise de dados com o emprego de agrupamento não hierárquico com o algoritmo k-means em cima de dados sobre distribuição de dialógo em filmes. A análise foi feita com base nos dados do Dataset **Polygraph's Film Dialogue**. Informações sobre este dataset e como ele foi gerado encontram-se no seu  [repositório original](https://github.com/matthewfdaniels/scripts).
+
+<br>
+
+***
+
+<br>
 
 ```{r setup, echo=FALSE, warning=FALSE, message=FALSE}
 
@@ -256,7 +271,15 @@ scaled_data %>%
   sample_n(10)
 ```
 
+<br>
+
+***
+
+<br>
+
 #  Número K ótimo 
+
+<br>
 
 ## Estatística GAP 
 
@@ -327,9 +350,15 @@ hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 
 * O índice de Hubert e o índice D sugerem K = 3  como a melhor solução
 
+<br>
+
+***
+
+<br>
+
 # K-Means 
 
-****
+<br>
 
 ## Agrupamento
 
@@ -372,7 +401,7 @@ km %>%
 
 ***
 
-Grupo 1 - **We Can Do It!**
+$\color{red}{\text{Grupo 1}}$ - **We Can Do It!**
 
   * Menor Faturamento 
   * Mais dialógo para as mulheres 
@@ -380,7 +409,7 @@ Grupo 1 - **We Can Do It!**
     
 <br>
 
-O Grupo 1 - **We Can Do It!** é o grupo de filmes de maior representação feminina, quer seja em proporção de personagens femininos como em proporção de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo das menores taxas de faturamento. Isso sugere uma infeliz associação negativa entre a representação feminina em filmes e o faturamento destes. 
+O $\color{red}{\text{Grupo 1}}$ - **We Can Do It!** é o grupo de filmes de maior representação feminina, quer seja em proporção de personagens femininos como em proporção de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo das menores taxas de faturamento. Isso sugere uma infeliz associação negativa entre a representação feminina em filmes e o faturamento destes. 
 
 <br>
 
@@ -393,7 +422,7 @@ O nome do grupo se refere ao famoso cartaz de J. Howard Miller de 1943 incentiva
 
 ***
 
-Grupo 2 - **It's A Man's Man's Man's World**   
+$\color{green}{\text{Grupo 2}}$ - **It's A Man's Man's Man's World**   
 
 * Maior faturamento entre todos
 * Menor taxa de dialógo para as mulheres
@@ -401,7 +430,7 @@ Grupo 2 - **It's A Man's Man's Man's World**
     
 <br>
 
-O Grupo 2 - **It's A Man's Man's Man's World** é o grupo de filmes de menor representação feminina, quer seja em proporção de personagens femininos como em proporção de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo de maiores taxas de faturamento. Isso sugere uma infeliz associação positiva entre ausência de  representação feminina em filmes e o faturamento destes. 
+O $\color{green}{\text{Grupo 2}}$ - **It's A Man's Man's Man's World** é o grupo de filmes de menor representação feminina, quer seja em proporção de personagens femininos como em proporção de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo de maiores taxas de faturamento. Isso sugere uma infeliz associação positiva entre ausência de  representação feminina em filmes e o faturamento destes. 
 
 <br>
 
@@ -413,7 +442,7 @@ O nome do grupo se refere à música de James Brown, a qual foi escrita por sua 
 
 ***
 
-Grupo 3 - **Em cima do muro**
+$\color{blue}{\text{Grupo 3}}$ - **Em cima do muro**
 
   * Filmes medianos em termos de proporção de personagens femininos, proporção de dialógos dedicados a personagens femininos e faturamento.
     
