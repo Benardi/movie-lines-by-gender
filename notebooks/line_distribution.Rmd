@@ -1,6 +1,6 @@
 ---
-title: "Distribuição de dialógo em filmes"
-subtitle: 'Questões de Gênero em dialógos de filme'
+title: "Movie lines by gender"
+subtitle: 'Gender issues in movie lines distribution'
 author: "José Benardi de Souza Nunes"
 date: 29/06/2018
 output:
@@ -15,11 +15,11 @@ output:
 
 <br>
 
-# Introdução
+# Introduction
 
 <br>
 
-> Análise de dados com o emprego de agrupamento não hierárquico com o algoritmo k-means em cima de dados sobre distribuição de dialógo em filmes. A análise foi feita com base nos dados do Dataset **Polygraph's Film Dialogue**. Informações sobre este dataset e como ele foi gerado encontram-se no seu  [repositório original](https://github.com/matthewfdaniels/scripts).
+> Data analysis with non-hierarchical clustering (algorithm k-means) on data about movie lines distribution. The analysis was made on the dataset **Polygraph's Film Dialogue**. Information about the dataset and how it was generated can be found in its [original repository](https://github.com/matthewfdaniels/scripts).
 
 <br>
 
@@ -72,14 +72,13 @@ readr::read_csv(here("data/meta_data7.csv"),
 
 <br>
 
-#### Combinando Dados Originais
+#### Combining original data
 
 ```{r}
 left_join(characters_list, 
           meta_data, 
           by=c("script_id")) %>%
   group_by(title, year) %>%
-  drop_na(gross) %>%
   ungroup() -> scripts_data
 
 scripts_data %>%
@@ -98,19 +97,20 @@ scripts_data %>%
     mutate(f_m_ratio = sum(gender == "f")/sum(gender == "m"),
            mean_fem_words = ifelse(sum(gender == "f") == 0, 0, sum(fem_words)/sum(gender == "f")),
            f_m_wordratio = total_fem_words/total_man_words) %>%
-  ungroup()  -> scripts_data
-
+  ungroup() %>%
+  drop_na() -> scripts_data
 scripts_data %>%
   select(title,
          year,
          f_m_ratio,
-         f_m_wordratio) %>%
+         f_m_wordratio,
+         mean_fem_words) %>%
   sample_n(10)
 ```
 
-## Exploração dos Dados 
+## Exploring data
 
-### Proporção entre dialógo feminino e masculino
+### Proportion of female and male dialogue
 
 ```{r}
 scripts_data %>%
@@ -123,10 +123,11 @@ scripts_data %>%
                  boundary = 0,
                  fill = "grey",
                  color = "black") +
-  labs(y="Frequência Relativa")
+  labs(y="Relative Frequency",
+       x="female/male  wordratio")
 ```
 
-* Em alguns raríssimos exemplos há muito mais dialógo feminino que feminino. 
+* In some rare occurrences there's a lot more female than male dialogue.
 
 ```{r}
 scripts_data %>%
@@ -139,10 +140,11 @@ scripts_data %>%
   geom_histogram(binwidth = 0.1,
                  fill = "grey",
                  color = "black") +
-  labs(y="Frequência Relativa")
+  labs(y="Relative Frequency",
+       x="female/male  wordratio")
 ```
 
-* Uma vez que filtramos os casos mais raros é possível ver que há uma forte domínio do dialógo masculino sobre o feminino nos filmes.
+* Once the more unusual cases have been filtered we can see a strong dominance of masculine dialogue over feminine dialogue in the movies.
 
 ```{r}
 scripts_data %>%
@@ -152,14 +154,18 @@ scripts_data %>%
   ggplot(aes(x="", 
              y=f_m_wordratio)) +
   geom_violin(fill="grey",
-               width=0.5)
+               width=0.5) +
+  labs(y="female/male  wordratio") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 ```
 
-* É ainda mais óbvio:
-    * A presença de alguns poucos casos de completo domínio do diálogo feminino
-    * O geral domínio do dialógo masculino sobre feminino
+* It becomes even more apparent:
+    * The existence of some few cases of complete dominance of feminine dialogue
+    * The overall dominance of masculine dialogue over feminine dialogue.
 
-### Proporção entre personagens femininos e masculinos 
+### Proportion of female and male characters
 
 ```{r}
 scripts_data %>%
@@ -173,10 +179,11 @@ scripts_data %>%
                  fill = "grey",
                  color = "black") +
   scale_x_continuous(breaks = seq(0,10,0.5)) +
-  labs(y="Frequência Relativa")
+    labs(y="Relative Frequency",
+       x="(female chars / male chars) ratio")
 ```
 
-* É nítido o domínio de personagens masculinos
+* The predominance of male characters is clear
 
 ```{r}
 scripts_data %>%
@@ -186,12 +193,16 @@ scripts_data %>%
   ggplot(aes(x="", 
              y=f_m_ratio)) +
   geom_violin(fill="grey",
-               width=0.5)
+               width=0.5) +
+  labs(y="(female chars / male chars) ratio") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 ```
 
-* Além do forte domínio de personangens masculinos é possível ver a existência de algumas instâncias, embora raras de uma avassaladora presença femininina, (e.g 10 vezes mais mulheres que homens).
+* Besides the strong predominance of male characters we can see the existence in some instances however infrequent of a overwhelming female presence (e.g 10 times more female than male characters).
 
-### Média de palavras ditas por personagens femininos
+## Mean number of words said by female characters
 
 ```{r}
 scripts_data %>%
@@ -204,12 +215,12 @@ scripts_data %>%
                  boundary = 0,
                  fill = "grey",
                  color = "black") +
-  labs(y="Frequência Relativa") +
+  labs(y="Relative Frequency",
+       x="Mean of female words") +
     scale_x_continuous(breaks = seq(0,7000,500))
-
 ```
 
-* Na maior parte dos filmes, em média os personagens femininos falam menos de 1000 palavras.
+* In most movies, the female characters speak less than 1000 words.
 
 ```{r}
 scripts_data %>%
@@ -219,12 +230,16 @@ scripts_data %>%
   ggplot(aes(x="", 
              y=mean_fem_words)) +
   geom_violin(fill="grey",
-               width=0.5)
+               width=0.5) +
+  labs(y="Mean of female words") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 ```
 
-* É possível perceber uma forte queda na quantidade de personagens femininos  a partir de 2000 palavras ditas. 
+* We can see a strong reduction in the occurrences when we go above 2000 words spoken.
 
-### Ano do filme 
+### Year of release
 
 ```{r}
 scripts_data %>%
@@ -234,10 +249,11 @@ scripts_data %>%
   ggplot(aes(x=year)) +
   geom_bar(fill = "grey",
            color = "black") +
-  labs(y="Frequência Absoluta")
+  labs(y="Absolute Frequency",
+       x="Year of release")
 ```
 
-* Os filmes são sua maioria recentes, a quase totalidade dos filmes foi lançada a partir dos anos 1990.
+* Most of the movies are recent, almost all of them released not before the 1990s.
 
 ```{r}
 scripts_data %>%
@@ -247,13 +263,17 @@ scripts_data %>%
   ggplot(aes(x="", 
              y=year)) +
   geom_violin(fill="grey",
-               width=0.5)
+               width=0.5) +
+  labs(y="Year of release") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 ```
 
-* Ainda é possível ver uma presença relevante de filmes do começo dos anos 1980.
-* Existem alguns filmes anteriores aos próprio anos 1950.
+* It's possible to see a relevant presence of movies from the 1980s.
+* There are some movies from before the 1950s.
 
-### Faturamento do filme 
+### Movie revenue
 
 ```{r}
 scripts_data %>%
@@ -266,11 +286,11 @@ scripts_data %>%
                  boundary = 0,
                  fill = "grey",
                  color = "black") +
-  labs(y="Frequência Relativa")
+  labs(y="Relative Frequency", x="Gross")
 ```
 
-* Faturamento baixo ou razoável para a maior parte dos filmes.
-* Alguns poucos filmes tiveram um faturamento esmagador.
+* Small or reasonable revenue for most movies.
+* Some few movies had a overwhelming revenue.
 
 ```{r}
 scripts_data %>%
@@ -280,12 +300,16 @@ scripts_data %>%
   ggplot(aes(x="", 
              y=gross)) +
   geom_violin(fill="grey",
-               width=0.5)
+               width=0.5) +
+  labs(y="Gross") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 ```
 
-* Resultados similares aos do respectivo histograma.
+* Similar results to respective histogram.
 
-## Aplicando escala apropriada aos dados.
+## Putting data on appropriate scale.
 
 ```{r}
 scripts_data %>%
@@ -295,12 +319,14 @@ scripts_data %>%
   ungroup() %>%
   select(title,
          gross,
-         mean_fem_words,
          f_m_ratio,
-         f_m_wordratio) -> data
+         f_m_wordratio,
+         mean_fem_words) %>%
+  na.omit() -> data
 
-select(data, -title) %>%
-mutate_all(funs(scale)) -> scaled_data
+select(data, -title) %>% 
+  mutate_all(funs(scale)) %>%
+  na.omit() -> scaled_data
 
 scaled_data %>% 
   sample_n(10)
@@ -312,17 +338,13 @@ scaled_data %>%
 
 <br>
 
-#  Número K ótimo 
+#  Optimal K for the K-means
 
 <br>
 
-## Técnicas Aplicadas
+## GAP Statistic
 
-<br>
-
-### Estatística GAP 
-
-A estatística GAP compara a solução do agrupamento com cada k com a solução em um dataset onde não há estrutura de grupos. 
+The GAP Statistic compares the grouping results with each available k in a data-set where there isn't grouping structure. 
 
 ```{r}
 plot_clusgap = function(clusgap, title="Gap Statistic calculation results"){
@@ -335,7 +357,9 @@ plot_clusgap = function(clusgap, title="Gap Statistic calculation results"){
 }
 ```
 
-```{r}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+set.seed(23)
+
 gaps <- scaled_data %>% 
     clusGap(FUN = kmeans,
             nstart = 20,
@@ -348,12 +372,13 @@ gaps <- scaled_data %>%
 plot_clusgap(gaps)
 ```
 
-* 3 grupos parece apropiado.
+* 3 groups (K = 3) seems appropriate.
 
-### Elbow Method
+## Elbow Method
 
 ```{r}
-set.seed(123)
+set.seed(23)
+
 # Compute and plot wss for k = 2 to k = 15.
 k.max <- 15
 
@@ -365,41 +390,41 @@ plot(1:k.max, wss,
      ylab="Total within-clusters sum of squares")
 ```
 
-* Pelo Elbow method 3 parece ser um bom número de grupos devido à queda de 3 para 4.
+* According to the Elbow method 3 seems a good choice as the drop from 3 to 4 seems substantial.
 
-### Bayesian Information Criterion
+## Bayesian Information Criterion
 
-```{r results=FALSE}
-d_clust <- Mclust(as.matrix(scaled_data), G=1:15, 
+```{r echo=FALSE, message=FALSE}
+set.seed(23)
+
+d_clust <- Mclust(as.matrix(scaled_data), G=1:15,
                   modelNames = mclust.options("emModelNames"))
 
-```
-
-```{r}
 plot(d_clust$BIC)
 ```
 
+* Visually K = 3 represent the most meaningful gain in terms of BIC (Bayesian Information Criterion) 
 
-* Visualmente K = 3 representa um ganho mais significativo em termos de BIC (Bayesian Information Criterion) 
-
-### Hubert Index e D Index
+## Hubert Index and D Index
 
 ```{r}
+set.seed(23)
+
 nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean", 
               min.nc=2, max.nc=5, method = "kmeans", 
               index = "all", alphaBeale = 0.1)
 hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 ```
 
-* O índice de Hubert e o índice D sugerem K = 5  como a melhor solução
+* Hubert Index and D Index suggest K = 5 as the best solution
 
 <br>
 
-## K Escolhido
+## Chosen K
 
 <br>
 
-> Optaremos por 3 grupos pois a maioria dos testes aponta nessa direção, e empiricamente não foi visto ganho no uso de K=5.
+> We'll choose 3 groups (K=3) because the majority of the employed tests point 3 groups as the best solution, and in terms of explanation (in terms of a human agent) K=3 gave space for a better explanation than K=5.
 
 <br>
 
@@ -411,9 +436,10 @@ hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 
 <br>
 
-## Agrupamento
+## Grouping
 
 ```{r}
+set.seed(23)
 n_clusters = 3
 
 scaled_data %>%
@@ -425,91 +451,99 @@ ggplotly(p)
 
 ```
 
-* É possível ver que existe uma parcela de filmes cuja separação em um dado grupo não foi completamente feliz pois os grupos se sobrepõe.
+<br>
+
+* We can see in the overlap of the groups that for some of the movies the separation wasn't completely effective.
 
 ```{r, warning=FALSE}
+set.seed(23)
+
 row.names(scaled_data) <- data$title
 
-toclust <- scaled_data %>% 
+toclust <- scaled_data %>%
     rownames_to_column(var = "title") 
 
-km = toclust %>% 
+km <- toclust %>% 
     select(-title) %>% 
     kmeans(centers = n_clusters, iter.max = 100, nstart = 20)
 
 km %>% 
-    augment(toclust) %>% 
-    gather(key = "variável", value = "valor", -title, -.cluster) %>% 
-    ggplot(aes(x = `variável`, y = valor, group = title, colour = .cluster)) + 
-    geom_point(alpha = 0.2) + 
-    geom_line(alpha = .5) + 
+    augment(toclust) %>%
+    gather(key = "variável", value = "valor", -title, -.cluster) %>%
+    ggplot(aes(x = `variável`, y = valor, group = title, colour = .cluster)) +
+    geom_point(alpha = 0.2) +
+    geom_line(alpha = .5) +
     facet_wrap(~ .cluster) +
+    labs(y="Value",
+         x="Dimension") +
     coord_flip()
 
 ```
 
-***
-
 <br>
 
-$\color{red}{\text{Grupo 1}}$ - **Em cima do muro**
+***
 
-  * Filmes medianos em termos de proporção de personagens femininos, proporção de dialógos dedicados a personagens femininos, média de dialógo feminino e faturamento.
+$\color{red}{\text{Grupo 1}}$ - **It's A Man's Man's Man's World**   
+
+* Highest-grossing movies of all
+* Smallest proportion of female dialogue
+* Smallest number of female characters
     
 <br>
 
+**It's A Man's Man's Man's World** is the group of movies of smallest female representativity, be it in the proportion of female characters or in the proportion of dialogue spoken by female characters. Curiously this is also the group with the Highest-grossing movies among all movies analyzed. This suggests an unfortunate association between lack of female representativity and profitable movies. 
+
+<br>
+
 ```
-O nome do grupo se refere à expressão que significa não tomar partido.
+The name of the group refers to James Brown's famous song, which was written by his then girlfriend Betty Jean Newsome and comments on the dysfunctional dynamic between genders.
 ```
 
 <br>
 
-***
 
+***
 
 $\color{green}{\text{Grupo 2}}$ - **We Can Do It!**
 
-  * Menor Faturamento 
-  * Mais dialógo para as mulheres 
-  * Maior taxa de personagens femininos
+  * Reasonable grossing
+  * More female dialogue than the others 
+  * Highest number of female characters
     
 <br>
 
-**We Can Do It!** é o grupo de filmes de maior representação feminina, quer seja em proporção de personagens femininos como em proporção e média de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo das menores taxas de faturamento. Isso sugere uma infeliz associação negativa entre a representação feminina em filmes e o faturamento destes. 
+**We Can Do It!** is the group with the most female representativity, be it in the proportion of female characters or in the proportion of dialogue spoken by female characters. With a decent grossing which is better than that of the third group but nowhere near that of the first group.
 
 <br>
 
+
 ```
-O nome do grupo se refere ao famoso cartaz de J. Howard Miller de 1943 incentivado as mulheres a participar no esforço de guerra nas fábricas. 
+The name of the group refers to the famous poster from J. Howard Miller published in 1943 motivating women to participate in the war effort in the factories. 
 ```
 
 <br>
+
 
 ***
 
-$\color{blue}{\text{Grupo 3}}$ - **It's A Man's Man's Man's World**   
+$\color{blue}{\text{Grupo 3}}$ - **On the fence**
 
-* Maior faturamento entre todos
-* Menor taxa de dialógo para as mulheres
-* Menor taxa de personagens femininos
+  * Average movies in overall female representativity and mediocre grossing.
     
 <br>
 
-**It's A Man's Man's Man's World** é o grupo de filmes de menor representação feminina, quer seja em proporção e média de personagens femininos como em proporção de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo de maiores taxas de faturamento. Isso sugere uma infeliz associação positiva entre ausência de  representação feminina em filmes e o faturamento destes. 
+```
+The name of the group refers to the expression about not taking a side.
+```
 
 <br>
 
-```
-O nome do grupo se refere à música de James Brown, a qual foi escrita por sua então namorada Betty Jean Newsome como um comentário sobre a relação entre os sexos.
-```
-
-***
-
-<br>
-
-## Qualidade da clusterização / Silhueta
+## Clustering Quality / Silhouette
 
 ```{r}
+set.seed(23)
+
 dists = scaled_data %>% 
   dist()
 
@@ -518,10 +552,11 @@ scaled_data %>%
 
 
 silhouette(km$cluster, dists) %>%
-   plot(col = RColorBrewer::brewer.pal(4, "Set2"),border=NA)
+   plot(col = RColorBrewer::brewer.pal(4, "Set2"),
+        main="",
+        border=NA)
 ```
 
 <br>
 
-* O valor de 0.47 da silhueta significa que a nossa clusterização foi razoável. ヾ(⌐■_■)ノ♪
-
+* The silhouette width of 0.47 suggests that our clustering was reasonable.
