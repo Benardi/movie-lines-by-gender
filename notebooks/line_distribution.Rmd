@@ -1,6 +1,6 @@
 ---
-title: "Distribuição de dialógo em filmes"
-subtitle: 'Questões de Gênero em dialógos de filme'
+title: "Line distribution in movies"
+subtitle: 'Gender issues in Line distribution in movies'
 author: "José Benardi de Souza Nunes"
 date: 29/06/2018
 output:
@@ -15,11 +15,11 @@ output:
 
 <br>
 
-# Introdução
+# Introduction
 
 <br>
 
-> Análise de dados com o emprego de agrupamento não hierárquico com o algoritmo k-means em cima de dados sobre distribuição de dialógo em filmes. A análise foi feita com base nos dados do Dataset **Polygraph's Film Dialogue**. Informações sobre este dataset e como ele foi gerado encontram-se no seu  [repositório original](https://github.com/matthewfdaniels/scripts).
+> Data analysis with non-hierarchical clustering (algorithm k-means) on data about line distribution in movies. The analysis was made on the dataset **Polygraph's Film Dialogue**. Information about the dataset and how it was generated can be found in its [original repository](https://github.com/matthewfdaniels/scripts).
 
 <br>
 
@@ -72,7 +72,7 @@ readr::read_csv(here("data/meta_data7.csv"),
 
 <br>
 
-#### Combinando Dados Originais
+#### Combining original data
 
 ```{r}
 left_join(characters_list, 
@@ -107,9 +107,9 @@ scripts_data %>%
   sample_n(10)
 ```
 
-## Exploração dos Dados 
+## Exploring data
 
-### Proporção entre dialógo feminino e masculino
+### Proportion of female and male dialogue
 
 ```{r}
 scripts_data %>%
@@ -122,7 +122,8 @@ scripts_data %>%
                  boundary = 0,
                  fill = "grey",
                  color = "black") +
-  labs(y="Frequência Relativa")
+  labs(y="Relative Frequency",
+       x="female/male  wordratio")
 ```
 
 * Em alguns raríssimos exemplos há muito mais dialógo feminino que feminino. 
@@ -138,10 +139,11 @@ scripts_data %>%
   geom_histogram(binwidth = 0.1,
                  fill = "grey",
                  color = "black") +
-  labs(y="Frequência Relativa")
+  labs(y="Relative Frequency",
+       x="female/male  wordratio")
 ```
 
-* Uma vez que filtramos os casos mais raros é possível ver que há uma forte domínio do dialógo masculino sobre o feminino nos filmes.
+* Once the more unusual cases have been filtered we can see a strong dominance of masculine dialogue over feminine dialogue in the movies.
 
 ```{r}
 scripts_data %>%
@@ -151,14 +153,18 @@ scripts_data %>%
   ggplot(aes(x="", 
              y=f_m_wordratio)) +
   geom_violin(fill="grey",
-               width=0.5)
+               width=0.5) +
+  labs(y="female/male  wordratio") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 ```
 
-* É ainda mais óbvio:
-    * A presença de alguns poucos casos de completo domínio do diálogo feminino
-    * O geral domínio do dialógo masculino sobre feminino
+* It becomes even more apparent:
+    * The existence of some few cases of complete dominance of feminine dialogue
+    * The overall dominance of masculine dialogue over feminine dialogue.
 
-### Proporção entre personagens femininos e masculinos 
+### Proportion of female and male characters
 
 ```{r}
 scripts_data %>%
@@ -172,10 +178,11 @@ scripts_data %>%
                  fill = "grey",
                  color = "black") +
   scale_x_continuous(breaks = seq(0,10,0.5)) +
-  labs(y="Frequência Relativa")
+    labs(y="Relative Frequency",
+       x="(female chars / male chars) ratio")
 ```
 
-* É nítido o domínio de personagens masculinos
+* The predominance of male characters is clear
 
 ```{r}
 scripts_data %>%
@@ -185,12 +192,16 @@ scripts_data %>%
   ggplot(aes(x="", 
              y=f_m_ratio)) +
   geom_violin(fill="grey",
-               width=0.5)
+               width=0.5) +
+  labs(y="(female chars / male chars) ratio") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 ```
 
-* Além do forte domínio de personangens masculinos é possível ver a existência de algumas instâncias, embora raras de uma avassaladora presença femininina, (e.g 10 vezes mais mulheres que homens).
+* Besides the strong predominance of male characters we can see the existence in some instances however unfrequent of a overwhelming female presence (e.g 10 times more female than male characters).
 
-### Ano do filme 
+### Year of release
 
 ```{r}
 scripts_data %>%
@@ -200,10 +211,11 @@ scripts_data %>%
   ggplot(aes(x=year)) +
   geom_bar(fill = "grey",
            color = "black") +
-  labs(y="Frequência Absoluta")
+  labs(y="Absolute Frequency",
+       x="Year of release")
 ```
 
-* Os filmes são sua maioria recentes, a quase totalidade dos filmes foi lançada a partir dos anos 1990.
+* Most of the movies are recent, almost all of them released not before the 1990s.
 
 ```{r}
 scripts_data %>%
@@ -213,13 +225,17 @@ scripts_data %>%
   ggplot(aes(x="", 
              y=year)) +
   geom_violin(fill="grey",
-               width=0.5)
+               width=0.5) +
+  labs(y="Year of release") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 ```
 
 * Ainda é possível ver uma presença relevante de filmes do começo dos anos 1980.
 * Existem alguns filmes anteriores aos próprio anos 1950.
 
-### Faturamento do filme 
+### Movie revenue
 
 ```{r}
 scripts_data %>%
@@ -232,11 +248,11 @@ scripts_data %>%
                  boundary = 0,
                  fill = "grey",
                  color = "black") +
-  labs(y="Frequência Relativa")
+  labs(y="Relative Frequency", x="Gross")
 ```
 
-* Faturamento baixo ou razoável para a maior parte dos filmes.
-* Alguns poucos filmes tiveram um faturamento esmagador.
+* Small or reasonable revenue for most movies.
+* Some few movies had a overwhelming revenue.
 
 ```{r}
 scripts_data %>%
@@ -246,12 +262,16 @@ scripts_data %>%
   ggplot(aes(x="", 
              y=gross)) +
   geom_violin(fill="grey",
-               width=0.5)
+               width=0.5) +
+  labs(y="Gross") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
 ```
 
-* Resultados similares aos do respectivo histograma.
+* Similar results to respective histogram.
 
-## Aplicando escala apropriada aos dados.
+## Putting data on appropriate scale.
 
 ```{r}
 scripts_data %>%
@@ -277,13 +297,13 @@ scaled_data %>%
 
 <br>
 
-#  Número K ótimo 
+#  Optimal K for K-means
 
 <br>
 
-## Estatística GAP 
+## GAP Statistic
 
-A estatística GAP compara a solução do agrupamento com cada k com a solução em um dataset onde não há estrutura de grupos. 
+The GAP Statistic compares the grouping results with each available k in a dataset where there isn't grouping structure. 
 
 ```{r}
 plot_clusgap = function(clusgap, title="Gap Statistic calculation results"){
@@ -309,7 +329,7 @@ gaps <- scaled_data %>%
 plot_clusgap(gaps)
 ```
 
-* 3 ou 6 grupos parece apropiado, mas como 6 é precedido por uma série de quedas 3 seria uma melhor opção.
+* Both 3 groups (K = 3) and 6 groups (K= 6) seem appropriate, but as 6 is preceded by a downward trend 3 would be the choice.
 
 ## Elbow Method
 
@@ -326,20 +346,20 @@ plot(1:k.max, wss,
      ylab="Total within-clusters sum of squares")
 ```
 
-* Pelo Elbow method 3 parece ser um bom número de grupos devido à queda de 3 para 4.
+* According to the Elbow method 3 seems a good choice as the drop from 3 to 4 seems substantial.
 
 ## Bayesian Information Criterion
 
 ```{r echo=FALSE, message=FALSE}
-d_clust <- Mclust(as.matrix(scaled_data), G=1:15, 
+d_clust <- Mclust(as.matrix(scaled_data), G=1:15,
                   modelNames = mclust.options("emModelNames"))
 
 plot(d_clust$BIC)
 ```
 
-* Visualmente K= 2 e K = 3 representam o ganho mais significativo em termos de BIC (Bayesian Information Criterion) 
+* Visually K= 2 e K = 3 both represent the most meaningful gain in terms of BIC (Bayesian Information Criterion) 
 
-## Hubert Index e D Index
+## Hubert Index and D Index
 
 ```{r}
 nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean", 
@@ -348,7 +368,7 @@ nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean",
 hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 ```
 
-* O índice de Hubert e o índice D sugerem K = 3  como a melhor solução
+* Hubert Index and D Index suggest K = 4 as the best solution
 
 <br>
 
