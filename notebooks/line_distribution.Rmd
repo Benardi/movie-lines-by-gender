@@ -1,14 +1,14 @@
 ---
-title: "Line distribution in movies"
-subtitle: 'Gender issues in Line distribution in movies'
+title: "Movie lines by gender"
+subtitle: 'Gender issues in movie lines distribution'
 author: "José Benardi de Souza Nunes"
 date: 29/06/2018
 output:
-  html_notebook:
-    toc: yes
-    toc_float: yes
   html_document:
     df_print: paged
+    toc: yes
+    toc_float: yes
+  html_notebook:
     toc: yes
     toc_float: yes
 ---
@@ -19,7 +19,7 @@ output:
 
 <br>
 
-> Data analysis with non-hierarchical clustering (algorithm k-means) on data about line distribution in movies. The analysis was made on the dataset **Polygraph's Film Dialogue**. Information about the dataset and how it was generated can be found in its [original repository](https://github.com/matthewfdaniels/scripts).
+> Data analysis with non-hierarchical clustering (algorithm k-means) on data about movie lines distribution. The analysis was made on the dataset **Polygraph's Film Dialogue**. Information about the dataset and how it was generated can be found in its [original repository](https://github.com/matthewfdaniels/scripts).
 
 <br>
 
@@ -79,7 +79,6 @@ left_join(characters_list,
           meta_data, 
           by=c("script_id")) %>%
   group_by(title, year) %>%
-  drop_na(gross) %>%
   ungroup() -> scripts_data
 
 scripts_data %>%
@@ -96,14 +95,16 @@ scripts_data %>%
   filter(total_fem_words !=  0) %>%
   filter(total_man_words !=  0) %>%
     mutate(f_m_ratio = sum(gender == "f")/sum(gender == "m"),
+           mean_fem_words = ifelse(sum(gender == "f") == 0, 0, sum(fem_words)/sum(gender == "f")),
            f_m_wordratio = total_fem_words/total_man_words) %>%
-  ungroup()  -> scripts_data
-
+  ungroup() %>%
+  drop_na() -> scripts_data
 scripts_data %>%
   select(title,
          year,
          f_m_ratio,
-         f_m_wordratio) %>%
+         f_m_wordratio,
+         mean_fem_words) %>%
   sample_n(10)
 ```
 
@@ -126,7 +127,7 @@ scripts_data %>%
        x="female/male  wordratio")
 ```
 
-* Em alguns raríssimos exemplos há muito mais dialógo feminino que feminino. 
+* In some rare occurrences there's a lot more female than male dialogue.
 
 ```{r}
 scripts_data %>%
@@ -199,7 +200,44 @@ scripts_data %>%
         axis.ticks.x=element_blank())
 ```
 
-* Besides the strong predominance of male characters we can see the existence in some instances however unfrequent of a overwhelming female presence (e.g 10 times more female than male characters).
+* Besides the strong predominance of male characters we can see the existence in some instances however infrequent of a overwhelming female presence (e.g 10 times more female than male characters).
+
+## Mean number of words said by female characters
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  filter(!mean_fem_words == 0) %>%
+  ggplot(aes(x=mean_fem_words,
+             y=(..count..)/sum(..count..))) +
+  geom_histogram(binwidth = 250,
+                 boundary = 0,
+                 fill = "grey",
+                 color = "black") +
+  labs(y="Relative Frequency",
+       x="Mean of female words") +
+    scale_x_continuous(breaks = seq(0,7000,500))
+```
+
+* In most movies, the female characters speak less than 1000 words.
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  filter(!mean_fem_words == 0) %>%
+  ggplot(aes(x="", 
+             y=mean_fem_words)) +
+  geom_violin(fill="grey",
+               width=0.5) +
+  labs(y="Mean of female words") +
+  theme(axis.title.x=element_blank(),
+        axis.text.x=element_blank(),
+        axis.ticks.x=element_blank())
+```
+
+* We can see a strong reduction in the occurrences when we go above 2000 words spoken.
 
 ### Year of release
 
@@ -232,8 +270,8 @@ scripts_data %>%
         axis.ticks.x=element_blank())
 ```
 
-* Ainda é possível ver uma presença relevante de filmes do começo dos anos 1980.
-* Existem alguns filmes anteriores aos próprio anos 1950.
+* It's possible to see a relevant presence of movies from the 1980s.
+* There are some movies from before the 1950s.
 
 ### Movie revenue
 
@@ -282,10 +320,13 @@ scripts_data %>%
   select(title,
          gross,
          f_m_ratio,
-         f_m_wordratio) -> data
+         f_m_wordratio,
+         mean_fem_words) %>%
+  na.omit() -> data
 
-select(data, -title) %>%
-mutate_all(funs(scale)) -> scaled_data
+select(data, -title) %>% 
+  mutate_all(funs(scale)) %>%
+  na.omit() -> scaled_data
 
 scaled_data %>% 
   sample_n(10)
@@ -297,13 +338,13 @@ scaled_data %>%
 
 <br>
 
-#  Optimal K for K-means
+#  Optimal K for the K-means
 
 <br>
 
 ## GAP Statistic
 
-The GAP Statistic compares the grouping results with each available k in a dataset where there isn't grouping structure. 
+The GAP Statistic compares the grouping results with each available k in a data-set where there isn't grouping structure. 
 
 ```{r}
 plot_clusgap = function(clusgap, title="Gap Statistic calculation results"){
@@ -316,7 +357,9 @@ plot_clusgap = function(clusgap, title="Gap Statistic calculation results"){
 }
 ```
 
-```{r}
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+set.seed(23)
+
 gaps <- scaled_data %>% 
     clusGap(FUN = kmeans,
             nstart = 20,
@@ -329,11 +372,13 @@ gaps <- scaled_data %>%
 plot_clusgap(gaps)
 ```
 
-* Both 3 groups (K = 3) and 6 groups (K= 6) seem appropriate, but as 6 is preceded by a downward trend 3 would be the choice.
+* 3 groups (K = 3) seems appropriate.
 
 ## Elbow Method
 
 ```{r}
+set.seed(23)
+
 # Compute and plot wss for k = 2 to k = 15.
 k.max <- 15
 
@@ -358,7 +403,7 @@ d_clust <- Mclust(as.matrix(scaled_data), G=1:15,
 plot(d_clust$BIC)
 ```
 
-* Visually K= 2 e K = 3 both represent the most meaningful gain in terms of BIC (Bayesian Information Criterion) 
+* Visually K = 3 represent the most meaningful gain in terms of BIC (Bayesian Information Criterion) 
 
 ## Hubert Index and D Index
 
@@ -371,7 +416,15 @@ nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean",
 hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 ```
 
-* Hubert Index and D Index suggest K = 4 as the best solution
+* Hubert Index and D Index suggest K = 5 as the best solution
+
+<br>
+
+## Chosen K
+
+<br>
+
+> We'll choose 3 groups (K=3) because the majority of the employed tests point 3 groups as the best solution, and in terms of explanation (in terms of a human agent) K=3 gave space for a better explanation than K=5.
 
 <br>
 
@@ -383,7 +436,7 @@ hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 
 <br>
 
-## Agrupamento
+## Grouping
 
 ```{r}
 set.seed(23)
@@ -398,27 +451,31 @@ ggplotly(p)
 
 ```
 
-* É possível ver os 3 grupos nitidamente distintos, por meio de um zoom percebe-se que embora o grupo 1 e o grupo 3 estejam próximos o overlap é basicamente inexistente.
+<br>
+
+* We can see in the overlap of the groups that for some of the movies the separation wasn't completely effective.
 
 ```{r, warning=FALSE}
 set.seed(23)
 
 row.names(scaled_data) <- data$title
 
-toclust <- scaled_data %>% 
+toclust <- scaled_data %>%
     rownames_to_column(var = "title") 
 
-km = toclust %>% 
+km <- toclust %>% 
     select(-title) %>% 
     kmeans(centers = n_clusters, iter.max = 100, nstart = 20)
 
 km %>% 
-    augment(toclust) %>% 
-    gather(key = "variável", value = "valor", -title, -.cluster) %>% 
-    ggplot(aes(x = `variável`, y = valor, group = title, colour = .cluster)) + 
-    geom_point(alpha = 0.2) + 
-    geom_line(alpha = .5) + 
+    augment(toclust) %>%
+    gather(key = "variável", value = "valor", -title, -.cluster) %>%
+    ggplot(aes(x = `variável`, y = valor, group = title, colour = .cluster)) +
+    geom_point(alpha = 0.2) +
+    geom_line(alpha = .5) +
     facet_wrap(~ .cluster) +
+    labs(y="Value",
+         x="Dimension") +
     coord_flip()
 
 ```
@@ -427,60 +484,62 @@ km %>%
 
 ***
 
-$\color{red}{\text{Grupo 1}}$ - **We Can Do It!**
+$\color{red}{\text{Grupo 1}}$ - **It's A Man's Man's Man's World**   
 
-  * Menor Faturamento 
-  * Mais dialógo para as mulheres 
-  * Maior taxa de personagens femininos
+* Highest-grossing movies of all
+* Smallest proportion of female dialogue
+* Smallest number of female characters
     
 <br>
 
-O $\color{red}{\text{Grupo 1}}$ - **We Can Do It!** é o grupo de filmes de maior representação feminina, quer seja em proporção de personagens femininos como em proporção de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo das menores taxas de faturamento. Isso sugere uma infeliz associação negativa entre a representação feminina em filmes e o faturamento destes. 
+**It's A Man's Man's Man's World** is the group of movies of smallest female representativity, be it in the proportion of female characters or in the proportion of dialogue spoken by female characters. Curiously this is also the group with the Highest-grossing movies among all movies analyzed. This suggests an unfortunate association between lack of female representativity and profitable movies. 
 
 <br>
 
-
 ```
-O nome do grupo se refere ao famoso cartaz de J. Howard Miller de 1943 incentivado as mulheres a participar no esforço de guerra nas fábricas. 
+The name of the group refers to James Brown's famous song, which was written by his then girlfriend Betty Jean Newsome and comments on the dysfunctional dynamic between genders.
 ```
 
 <br>
+
 
 ***
 
-$\color{green}{\text{Grupo 2}}$ - **It's A Man's Man's Man's World**   
+$\color{green}{\text{Grupo 2}}$ - **We Can Do It!**
 
-* Maior faturamento entre todos
-* Menor taxa de dialógo para as mulheres
-* Menor taxa de personagens femininos
+  * Reasonable grossing
+  * More female dialogue than the others 
+  * Highest number of female characters
     
 <br>
 
-O $\color{green}{\text{Grupo 2}}$ - **It's A Man's Man's Man's World** é o grupo de filmes de menor representação feminina, quer seja em proporção de personagens femininos como em proporção de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo de maiores taxas de faturamento. Isso sugere uma infeliz associação positiva entre ausência de  representação feminina em filmes e o faturamento destes. 
+**We Can Do It!** is the group with the most female representativity, be it in the proportion of female characters or in the proportion of dialogue spoken by female characters. With a decent grossing which is better than that of the third group but nowhere near that of the first group.
 
 <br>
 
+
 ```
-O nome do grupo se refere à música de James Brown, a qual foi escrita por sua então namorada Betty Jean Newsome como um comentário sobre a relação entre os sexos.
+The name of the group refers to the famous poster from J. Howard Miller published in 1943 motivating women to participate in the war effort in the factories. 
 ```
 
 <br>
+
 
 ***
 
-$\color{blue}{\text{Grupo 3}}$ - **Em cima do muro**
+$\color{blue}{\text{Grupo 3}}$ - **On the fence**
 
-  * Filmes medianos em termos de proporção de personagens femininos, proporção de dialógos dedicados a personagens femininos e faturamento.
+  * Average movies in overall female representativity and mediocre grossing.
     
 <br>
 
 ```
-O nome do grupo se refere à expressão que significa não tomar partido.
+The name of the group refers to the expression about not taking a side.
 ```
 
 <br>
 
-## Qualidade da clusterização / Silhueta
+## Clustering Quality / Silhouette
 
 ```{r}
 set.seed(23)
@@ -493,12 +552,11 @@ scaled_data %>%
 
 
 silhouette(km$cluster, dists) %>%
-   plot(col = RColorBrewer::brewer.pal(4, "Set2"),border=NA)
+   plot(col = RColorBrewer::brewer.pal(4, "Set2"),
+        main="",
+        border=NA)
 ```
 
 <br>
 
-* O valor de 0.6 da silhueta significa que a nossa clusterização foi razoável. ヾ(⌐■_■)ノ♪
-
-
-
+* The silhouette width of 0.47 suggests that our clustering was reasonable.
