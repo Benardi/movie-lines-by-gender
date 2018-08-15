@@ -4,11 +4,11 @@ subtitle: 'Questões de Gênero em dialógos de filme'
 author: "José Benardi de Souza Nunes"
 date: 29/06/2018
 output:
-  html_notebook:
-    toc: yes
-    toc_float: yes
   html_document:
     df_print: paged
+    toc: yes
+    toc_float: yes
+  html_notebook:
     toc: yes
     toc_float: yes
 ---
@@ -96,6 +96,7 @@ scripts_data %>%
   filter(total_fem_words !=  0) %>%
   filter(total_man_words !=  0) %>%
     mutate(f_m_ratio = sum(gender == "f")/sum(gender == "m"),
+           mean_fem_words = ifelse(sum(gender == "f") == 0, 0, sum(fem_words)/sum(gender == "f")),
            f_m_wordratio = total_fem_words/total_man_words) %>%
   ungroup()  -> scripts_data
 
@@ -190,6 +191,39 @@ scripts_data %>%
 
 * Além do forte domínio de personangens masculinos é possível ver a existência de algumas instâncias, embora raras de uma avassaladora presença femininina, (e.g 10 vezes mais mulheres que homens).
 
+### Média de palavras ditas por personagens femininos
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  filter(!mean_fem_words == 0) %>%
+  ggplot(aes(x=mean_fem_words,
+             y=(..count..)/sum(..count..))) +
+  geom_histogram(binwidth = 250,
+                 boundary = 0,
+                 fill = "grey",
+                 color = "black") +
+  labs(y="Frequência Relativa") +
+    scale_x_continuous(breaks = seq(0,7000,500))
+
+```
+
+* Na maior parte dos filmes, em média os personagens femininos falam menos de 1000 palavras.
+
+```{r}
+scripts_data %>%
+  group_by(title,year) %>%
+  unique() %>%
+  filter(!mean_fem_words == 0) %>%
+  ggplot(aes(x="", 
+             y=mean_fem_words)) +
+  geom_violin(fill="grey",
+               width=0.5)
+```
+
+* É possível perceber uma forte queda na quantidade de personagens femininos  a partir de 2000 palavras ditas. 
+
 ### Ano do filme 
 
 ```{r}
@@ -261,6 +295,7 @@ scripts_data %>%
   ungroup() %>%
   select(title,
          gross,
+         mean_fem_words,
          f_m_ratio,
          f_m_wordratio) -> data
 
@@ -281,7 +316,11 @@ scaled_data %>%
 
 <br>
 
-## Estatística GAP 
+## Técnicas Aplicadas
+
+<br>
+
+### Estatística GAP 
 
 A estatística GAP compara a solução do agrupamento com cada k com a solução em um dataset onde não há estrutura de grupos. 
 
@@ -309,9 +348,9 @@ gaps <- scaled_data %>%
 plot_clusgap(gaps)
 ```
 
-* 3 ou 6 grupos parece apropiado, mas como 6 é precedido por uma série de quedas 3 seria uma melhor opção.
+* 3 grupos parece apropiado.
 
-## Elbow Method
+### Elbow Method
 
 ```{r}
 set.seed(123)
@@ -328,18 +367,22 @@ plot(1:k.max, wss,
 
 * Pelo Elbow method 3 parece ser um bom número de grupos devido à queda de 3 para 4.
 
-## Bayesian Information Criterion
+### Bayesian Information Criterion
 
-```{r echo=FALSE, message=FALSE}
+```{r results=FALSE}
 d_clust <- Mclust(as.matrix(scaled_data), G=1:15, 
                   modelNames = mclust.options("emModelNames"))
 
+```
+
+```{r}
 plot(d_clust$BIC)
 ```
 
-* Visualmente K= 2 e K = 3 representam o ganho mais significativo em termos de BIC (Bayesian Information Criterion) 
 
-## Hubert Index e D Index
+* Visualmente K = 3 representa um ganho mais significativo em termos de BIC (Bayesian Information Criterion) 
+
+### Hubert Index e D Index
 
 ```{r}
 nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean", 
@@ -348,7 +391,15 @@ nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean",
 hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 ```
 
-* O índice de Hubert e o índice D sugerem K = 3  como a melhor solução
+* O índice de Hubert e o índice D sugerem K = 5  como a melhor solução
+
+<br>
+
+## K Escolhido
+
+<br>
+
+> Optaremos por 3 grupos pois a maioria dos testes aponta nessa direção, e empiricamente não foi visto ganho no uso de K=5.
 
 <br>
 
@@ -374,7 +425,7 @@ ggplotly(p)
 
 ```
 
-* É possível ver os 3 grupos nitidamente distintos, por meio de um zoom percebe-se que embora o grupo 1 e o grupo 3 estejam próximos o overlap é basicamente inexistente.
+* É possível ver que existe uma parcela de filmes cuja separação em um dado grupo não foi completamente feliz pois os grupos se sobrepõe.
 
 ```{r, warning=FALSE}
 row.names(scaled_data) <- data$title
@@ -397,11 +448,26 @@ km %>%
 
 ```
 
+***
+
+<br>
+
+$\color{red}{\text{Grupo 1}}$ - **Em cima do muro**
+
+  * Filmes medianos em termos de proporção de personagens femininos, proporção de dialógos dedicados a personagens femininos, média de dialógo feminino e faturamento.
+    
+<br>
+
+```
+O nome do grupo se refere à expressão que significa não tomar partido.
+```
+
 <br>
 
 ***
 
-$\color{red}{\text{Grupo 1}}$ - **We Can Do It!**
+
+$\color{green}{\text{Grupo 2}}$ - **We Can Do It!**
 
   * Menor Faturamento 
   * Mais dialógo para as mulheres 
@@ -409,10 +475,9 @@ $\color{red}{\text{Grupo 1}}$ - **We Can Do It!**
     
 <br>
 
-O $\color{red}{\text{Grupo 1}}$ - **We Can Do It!** é o grupo de filmes de maior representação feminina, quer seja em proporção de personagens femininos como em proporção de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo das menores taxas de faturamento. Isso sugere uma infeliz associação negativa entre a representação feminina em filmes e o faturamento destes. 
+**We Can Do It!** é o grupo de filmes de maior representação feminina, quer seja em proporção de personagens femininos como em proporção e média de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo das menores taxas de faturamento. Isso sugere uma infeliz associação negativa entre a representação feminina em filmes e o faturamento destes. 
 
 <br>
-
 
 ```
 O nome do grupo se refere ao famoso cartaz de J. Howard Miller de 1943 incentivado as mulheres a participar no esforço de guerra nas fábricas. 
@@ -422,7 +487,7 @@ O nome do grupo se refere ao famoso cartaz de J. Howard Miller de 1943 incentiva
 
 ***
 
-$\color{green}{\text{Grupo 2}}$ - **It's A Man's Man's Man's World**   
+$\color{blue}{\text{Grupo 3}}$ - **It's A Man's Man's Man's World**   
 
 * Maior faturamento entre todos
 * Menor taxa de dialógo para as mulheres
@@ -430,7 +495,7 @@ $\color{green}{\text{Grupo 2}}$ - **It's A Man's Man's Man's World**
     
 <br>
 
-O $\color{green}{\text{Grupo 2}}$ - **It's A Man's Man's Man's World** é o grupo de filmes de menor representação feminina, quer seja em proporção de personagens femininos como em proporção de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo de maiores taxas de faturamento. Isso sugere uma infeliz associação positiva entre ausência de  representação feminina em filmes e o faturamento destes. 
+**It's A Man's Man's Man's World** é o grupo de filmes de menor representação feminina, quer seja em proporção e média de personagens femininos como em proporção de dialógos dedicados a personagens femininos. Existe porém uma característica negativa que acompanha este mesmo grupo, pois este é também o grupo de maiores taxas de faturamento. Isso sugere uma infeliz associação positiva entre ausência de  representação feminina em filmes e o faturamento destes. 
 
 <br>
 
@@ -438,19 +503,7 @@ O $\color{green}{\text{Grupo 2}}$ - **It's A Man's Man's Man's World** é o grup
 O nome do grupo se refere à música de James Brown, a qual foi escrita por sua então namorada Betty Jean Newsome como um comentário sobre a relação entre os sexos.
 ```
 
-<br>
-
 ***
-
-$\color{blue}{\text{Grupo 3}}$ - **Em cima do muro**
-
-  * Filmes medianos em termos de proporção de personagens femininos, proporção de dialógos dedicados a personagens femininos e faturamento.
-    
-<br>
-
-```
-O nome do grupo se refere à expressão que significa não tomar partido.
-```
 
 <br>
 
@@ -470,5 +523,5 @@ silhouette(km$cluster, dists) %>%
 
 <br>
 
-* O valor de 0.6 da silhueta significa que a nossa clusterização foi razoável. ヾ(⌐■_■)ノ♪
+* O valor de 0.47 da silhueta significa que a nossa clusterização foi razoável. ヾ(⌐■_■)ノ♪
 
