@@ -334,7 +334,6 @@ plot_clusgap(gaps)
 ## Elbow Method
 
 ```{r}
-set.seed(123)
 # Compute and plot wss for k = 2 to k = 15.
 k.max <- 15
 
@@ -351,6 +350,8 @@ plot(1:k.max, wss,
 ## Bayesian Information Criterion
 
 ```{r echo=FALSE, message=FALSE}
+set.seed(23)
+
 d_clust <- Mclust(as.matrix(scaled_data), G=1:15,
                   modelNames = mclust.options("emModelNames"))
 
@@ -362,6 +363,8 @@ plot(d_clust$BIC)
 ## Hubert Index and D Index
 
 ```{r}
+set.seed(23)
+
 nb <- NbClust(scaled_data, diss=NULL, distance = "euclidean", 
               min.nc=2, max.nc=5, method = "kmeans", 
               index = "all", alphaBeale = 0.1)
@@ -383,6 +386,7 @@ hist(nb$Best.nc[1,], breaks = max(na.omit(nb$Best.nc[1,])))
 ## Agrupamento
 
 ```{r}
+set.seed(23)
 n_clusters = 3
 
 scaled_data %>%
@@ -397,6 +401,8 @@ ggplotly(p)
 * É possível ver os 3 grupos nitidamente distintos, por meio de um zoom percebe-se que embora o grupo 1 e o grupo 3 estejam próximos o overlap é basicamente inexistente.
 
 ```{r, warning=FALSE}
+set.seed(23)
+
 row.names(scaled_data) <- data$title
 
 toclust <- scaled_data %>% 
@@ -477,6 +483,8 @@ O nome do grupo se refere à expressão que significa não tomar partido.
 ## Qualidade da clusterização / Silhueta
 
 ```{r}
+set.seed(23)
+
 dists = scaled_data %>% 
   dist()
 
@@ -491,4 +499,6 @@ silhouette(km$cluster, dists) %>%
 <br>
 
 * O valor de 0.6 da silhueta significa que a nossa clusterização foi razoável. ヾ(⌐■_■)ノ♪
+
+
 
